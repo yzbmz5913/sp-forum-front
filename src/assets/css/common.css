@@ -1,0 +1,73 @@
+@import url("normalize.css");
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.clearfix:after{
+    content: '';
+    height: 0;
+    line-height: 0;
+    display: block;
+    clear: both;
+}
+
+/*body{*/
+/*     --bg: url("https://images.alphacoders.com/590/thumb-1920-590805.png") no-repeat fixed 50% 95%;*/
+/*    background: var(--bg);*/
+/*    background-size: cover;*/
+/*}*/
+/*body:before{*/
+/*    content: "";*/
+/*    background: var(--bg);*/
+/*    filter: blur(5px);*/
+/*    z-index: 0;*/
+/*}*/
+
+ul{
+    list-style: none;
+}
+
+a{
+    text-decoration: none;
+}
+
+.ellipsis{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.card{
+    position: relative;
+    border-radius: 8px;
+    background: url("https://images.alphacoders.com/590/thumb-1920-590805.png") no-repeat fixed 50% 95%;
+    background-size: cover;
+    overflow: hidden;
+}
+
+.card:before{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: inherit;
+    filter: blur(10px) saturate(80%);
+}
+
+.card *{
+    position: relative;
+    z-index: 1;
+}
+
+.card:after{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(250,250,250,.8);
+}
