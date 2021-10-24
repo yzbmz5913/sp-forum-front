@@ -21,7 +21,7 @@ export default {
   height: 30px;
   width: 240px;
   border: 1px solid #bebebe;
-  border-radius: 2px;
+  border-radius: 4px;
   box-sizing: border-box;
   text-indent: 0.5em;
   font-size: 13px;
@@ -40,6 +40,7 @@ export default {
   height: 30px;
   width: 30px;
   color: #bebebe;
+  cursor: pointer;
 }
 
 .search .search-btn:hover{

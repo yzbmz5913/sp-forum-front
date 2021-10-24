@@ -44,6 +44,7 @@ a{
     background: url("https://images.alphacoders.com/590/thumb-1920-590805.png") no-repeat fixed 50% 95%;
     background-size: cover;
     overflow: hidden;
+    box-shadow: 2px 2px 4px rgba(100,100,100,0.3);
 }
 
 .card:before{

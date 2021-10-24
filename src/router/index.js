@@ -19,14 +19,35 @@ const routes = [
     component: () => import('../views/user/User'),
     children: [
       {
-        path: '',
-        redirect: 'notification',
-      },
-      {
         path: 'notification',
         component: () => import('../views/user/Notification')
+      },
+      {
+        path: 'posts',
+        component: () => import('../views/user/Posts')
+      },
+      {
+        path: 'fav',
+        component: () => import('../views/user/Fav')
+      },
+      {
+        path: 'history',
+        component: () => import('../views/user/History')
+      },
+      {
+        path: 'follower',
+        component: () => import('../views/user/Follow'),
+
+      },
+      {
+        path: 'following',
+        component: () => import('../views/user/Follow')
       }
     ]
+  },
+  {
+    path: '/thread/:tid',
+    component: () => import('../views/thread/Thread')
   }
 ]
 

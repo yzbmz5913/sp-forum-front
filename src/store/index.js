@@ -6,11 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         shouldMask: false,
-        user: {
-            username: 'stan marsh',
-            desc: '我是stan哦，我喜欢玩风暴英雄我是stan哦，我喜欢玩风暴英雄我是stan哦，我喜欢玩风暴英雄我是stan哦，我喜欢玩风暴英雄我是stan哦，我喜欢玩风暴英雄我是stan哦，我喜欢玩风暴英雄我是stan哦，我喜欢玩风暴',
-            face: ''
-        }
+        user: {}
     },
     mutations: {
         mask(state, flag) {
@@ -18,8 +14,14 @@ export default new Vuex.Store({
         },
         changeUserProfile(state, payload) {
             state.user.username = payload.username
-            state.user.face = payload.face
+            state.user.faceUrl = payload.faceUrl
             state.user.desc = payload.desc
+        },
+        login(state){
+            localStorage.setItem('jwt','jwt123')
+        },
+        logout(state){
+            localStorage.removeItem('jwt')
         }
     },
     actions: {},

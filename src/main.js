@@ -10,3 +10,6 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
+document.body.style.background='url("https://images.alphacoders.com/590/thumb-1920-590805.png") no-repeat fixed 50% 95%'
+document.body.style.backgroundSize='cover'

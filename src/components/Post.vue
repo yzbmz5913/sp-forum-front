@@ -1,52 +1,48 @@
 <template>
-<div class="post clearfix">
+<div class="post clearfix card">
   <div class="left">
     <div class="detail">
       <h3><a href="#" class="title">{{title}}</a></h3>
-      <p class="abstract ellipsis">{{abstract}}</p>
+      <p class="abstract ellipsis" :style="{width: (leftW?leftW:'550')+'px'}">{{abstract}}</p>
     </div>
     <div class="img-box">
       <img v-for="img in images" :src="img.path" alt="">
     </div>
   </div>
   <div class="right">
-      <div class="pro">
-        <profile size="36" face-url=""></profile>
-        <p class="ellipsis">{{author}}</p>
+      <div class="pro" @click="c()">
+        <profile size="40" :face-url="owner.faceUrl"></profile>
+        <p class="ellipsis">{{owner.username}}</p>
       </div>
-
-
-    <div class="reply">
-      <i class="icon iconfont icon-resonserate"></i>
-      <span>{{reply}}</span>
-    </div>
-    <div class="visit">
-      <i class="icon iconfont icon-browse"></i>
-      <span>{{visit}}</span>
-    </div>
-    <div class="date">
-      <i class="icon iconfont icon-calendar"></i>
-      <span>{{date}}</span>
-    </div>
+    <stat class="reply" icon="icon-resonserate" :text="reply"></stat>
+    <stat class="visit" icon="icon-browse" :text="visit"></stat>
+    <stat class="date" icon="icon-calendar" :text="date"></stat>
   </div>
 </div>
 </template>
 
 <script>
 import Profile from "./Profile";
+import Stat from "./Stat";
 export default {
   name: "Post",
   components:{
+    Stat,
     Profile
   },
-  props: ['title','abstract','images','faceUrl','author','reply','visit','date'],
+  props: ['id','title','abstract','images','owner','reply','visit','date','leftW'],
+  methods:{
+    c(){
+      this.$router.push(`/user/${this.owner.uid}/posts`)
+    }
+  }
 }
 </script>
 
 <style scoped>
 .post{
-  padding-left: 15px;
-  border-bottom: 2px solid #bbb;
+  margin-bottom: 8px;
+  padding: 10px 10px 10px 15px;
 }
 .left{
   float: left;
@@ -78,8 +74,8 @@ export default {
   height: 66px;
   display: flex;
   align-items: center;
-  font-size: 13px;
-  color: #666;
+  font-size: 14px;
+  color: #333;
 }
 .right .pro{
   position: absolute;
@@ -91,7 +87,7 @@ export default {
   width: 84px;
   display: inline-block;
   margin-left: 8px;
-  color: #666;
+  color: #333;
 }
 .right span{
   margin-right: 40px;

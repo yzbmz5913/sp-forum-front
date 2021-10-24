@@ -1,5 +1,5 @@
 <template>
-  <div class="posts">
+  <div class="user-right">
     <ul>
       <li v-for="post in posts">
         <post :title="post.title"
@@ -9,25 +9,23 @@
               :date="post.date"
               :images="post.images"
               :owner="post.owner"
+              left-w="400"
         ></post>
       </li>
     </ul>
-    <loading class="loading" v-show="isLoading"></loading>
   </div>
 </template>
 
 <script>
-import Post from "./Post";
-import utils from "../assets/js/utils";
-import Loading from "./Loading";
+import utils from "../../assets/js/utils";
+import Post from "../../components/Post";
 
 export default {
   name: "Posts",
-  components: {
-    Loading,
+  components:{
     Post,
   },
-  data() {
+  data(){
     return {
       posts: [
         {
@@ -72,69 +70,16 @@ export default {
           date: utils.abs2rel('2021-10-19 19:23:23')
         },
       ],
-      isLoading: false,
-      page: 1,
     }
   },
-  methods: {
-    numFlow(num) {
+  methods:{
+    numFlow(num){
       return utils.numFlow(num)
     }
-  },
-  mounted() {
-    let timer = null
-    let lis = () => {
-      let windowHeight = document.documentElement.clientHeight || document.body.clientHeight;// 视口高度
-      if (!timer) {
-        timer = setTimeout(async () => {
-          let documentHeight = document.documentElement.scrollHeight || document.body.scrollHeight;// 页面高度
-          let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;// 滚动条位置
-          if ((windowHeight + scrollTop + 2) >= documentHeight) {
-            this.isLoading = true
-            await new Promise(r => setTimeout(() => {
-              this.isLoading = false
-              this.posts.push({
-                title: '我爱坦子',
-                abstract: '我爱坦子，啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦',
-                images: [{
-                  path: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg0.pconline.com.cn%2Fpconline%2F1401%2F09%2F4142876_keai%2F46-121220093F2_thumb.gif&refer=http%3A%2F%2Fimg0.pconline.com.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1637292338&t=a795fdb1e1585d1445ec583f13065094',
-                }],
-                owner: {
-                  uid: 1,
-                  faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg',
-                  username: 'stan marsh',
-                },
-                reply: 43,
-                visit: 2552,
-                date: utils.abs2rel('2021-10-20 19:23:23')
-              })
-              r()
-            }, 1000))
-          }
-          timer = null
-        }, 1000)
-      }
-    }
-    window.addEventListener('scroll', lis)
   }
 }
 </script>
 
 <style scoped>
-.posts {
-  margin: 0 auto;
-  width: 70%;
-}
 
-.posts ul {
-  z-index: 5;
-}
-
-.posts .loading {
-  height: 120px;
-  width: 120px;
-  position: fixed;
-  bottom: 0;
-  left: calc(50% - 60px);
-}
 </style>

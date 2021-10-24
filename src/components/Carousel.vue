@@ -73,9 +73,10 @@ export default {
 .carousel {
   --img-w: 700px;
   width: var(--img-w);
-  height: 400px;
+  height: 380px;
   position: relative;
   overflow: hidden;
+  border-radius: 8px;
 }
 
 .images {

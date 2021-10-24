@@ -2,16 +2,16 @@
   <div class="user-bar card">
     <div class="info">
       <div class="face">
-        <profile size="100"></profile>
+        <profile size="100" :face-url="$store.state.user.faceUrl" :no-link="true"></profile>
       </div>
       <div class="right">
         <div style="display: flex;align-items: center;justify-content: space-between">
-          <h3>{{$store.state.user.username}}</h3>
+          <h3>{{ $store.state.user.username }}</h3>
           <div class="edit" @click="edit()">
             <btn text="编辑资料"></btn>
           </div>
         </div>
-        <p>{{$store.state.user.desc}}</p>
+        <p>{{ $store.state.user.desc }}</p>
       </div>
     </div>
     <div class="statistics">
@@ -48,7 +48,7 @@ export default {
         let x = event.clientX, y = event.clientY
         if (this.$store.state.shouldMask && x < l || x > r || y < t || y > b) {
           let succeed = this.commitEdition()
-          if(succeed){
+          if (succeed) {
             this.$store.commit('mask', false)
             window.removeEventListener('mousedown', this.lis, {capture: true})
           }
@@ -61,7 +61,7 @@ export default {
       this.$store.commit('mask', true)
       window.addEventListener('mousedown', this.lis, {capture: true})
     },
-    commitEdition(){
+    commitEdition() {
       let newUsername = this.$refs.editor.username
       let newDesc = this.$refs.editor.desc
       let newFace = this.$refs.editor.faceUrl
@@ -70,10 +70,14 @@ export default {
         username: newUsername,
         desc: newDesc,
         face: newFace,
-        pwd: newPwd
       }
-      this.$store.commit('changeUserProfile',changeUserProfileReq)
-      return true
+      if (newPwd) changeUserProfileReq.pwd = newPwd
+
+      let success=true //todo call backend api，校验是否修改成功
+      if(success){
+        location.reload()
+      }
+      return false
     }
   },
   mounted() {
@@ -115,8 +119,9 @@ export default {
   display: inline-block;
   margin: 10px 0 12px 0;
 }
+
 .user-bar .info .right p {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.3;
 }
 

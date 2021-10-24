@@ -1,5 +1,5 @@
 <template>
-<div id="face" :style="{height: size+'px', width: size+'px'}">
+<div id="face" :style="bgi">
 
 </div>
 </template>
@@ -14,6 +14,18 @@ export default {
     'faceUrl':{
       type: String
     }
+  },
+  data(){
+    return{
+      bgi:{
+        height: this.size+'px',
+        width: this.size+'px',
+        backgroundImage: `url(${this.faceUrl})`
+      }
+    }
+  },
+  methods:{
+
   }
 }
 </script>
@@ -21,9 +33,11 @@ export default {
 <style scoped>
 #face{
   display: inline-block;
-  background-image: url('../assets/img/face.jpg');
   background-repeat: no-repeat;
   background-size: 100% 100%;
   border-radius: 50%;
+}
+#face:hover{
+  cursor: pointer;
 }
 </style>

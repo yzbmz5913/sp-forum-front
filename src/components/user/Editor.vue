@@ -1,9 +1,10 @@
 <template>
 <div class="e card">
   <div class="left">
-    <div class="p"><profile size="80"></profile></div>
-    <div>
-      <btn text="更换头像"></btn>
+    <div id="p"><profile size="80" :face-url="faceUrl" style="cursor: auto"></profile></div>
+    <div class="upload">
+      更换头像
+      <input type="file" id="file" @change="changeProfile()">
     </div>
   </div>
   <div class="right">
@@ -40,14 +41,22 @@ export default {
     return {
       desc: this.$store.state.user.desc,
       username: this.$store.state.user.username,
-      faceURL: this.$store.state.user.faceURL,
+      faceUrl: this.$store.state.user.faceUrl,
       pwd: '',
 
       pwdVisible: false,
     }
   },
-  methods:{
-
+  methods: {
+    changeProfile(){
+      let preview = document.querySelector('#p #face')
+      let file = document.querySelector('#file').files[0]
+      let reader = new FileReader()
+      reader.onload = ()=> {
+        preview.style.backgroundImage = `url('${reader.result}')`
+      }
+      if(file)reader.readAsDataURL(file)
+    }
   }
 }
 </script>
@@ -71,7 +80,7 @@ export default {
   flex-direction: column;
   align-items: center;
 }
-.left .p{
+.left #p{
   margin-bottom: 10px;
 }
 .e .right{
@@ -87,7 +96,7 @@ export default {
 }
 .right input,.right textarea{
   outline: none;
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0,0,0,0.07);
 }
 .right input{
   display: inline-block;
@@ -95,8 +104,7 @@ export default {
   width: 100%;
   padding: 0 5px;
   box-sizing: border-box;
-  border: 0;
-  border-bottom: 1px solid #666;
+  border: none;
 }
 
 textarea{
@@ -105,6 +113,7 @@ textarea{
   padding: 5px;
   box-sizing: border-box;
   line-height: 1.25;
+  border: none;
 }
 textarea::-webkit-scrollbar{
   display: none;
@@ -114,5 +123,30 @@ textarea::-webkit-scrollbar{
   font-size: 20px;
   position: absolute;
   right: 0;
+}
+.upload {
+  --h: 26px;
+  width: 100px;
+  height: var(--h);
+  background-color: rgba(188, 188, 188, .7);
+  text-align: center;
+  font-size: 13px;
+  letter-spacing: 1px;
+  line-height: var(--h);
+  user-select: none;
+  transition: background-color 200ms;
+  box-shadow: 1px 1px 1px rgba(122, 122, 122, 0.4);
+}
+
+.upload:hover,.upload input:hover {
+  background-color: rgba(133, 133, 133, .7);
+}
+.upload input{
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100px;
+  height: 26px;
 }
 </style>
