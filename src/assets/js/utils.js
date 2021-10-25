@@ -24,13 +24,13 @@ export default {
     numFlow(num) {
         return num > 1000 ? '999+' : num
     },
-    isLogin(){
+    isLogin() {
         let jwt = localStorage.getItem('jwt')
         //verify jwt
-        loginCache=Date.now()
+        loginCache = Date.now()
         return !!jwt
     },
-    isLoginCached(){
+    isLoginCached() {
         return Date.now() - loginCache < 15 * 60 * 1000;
     }
 

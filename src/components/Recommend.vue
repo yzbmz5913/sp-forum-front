@@ -7,8 +7,8 @@
       <p>热门帖子</p>
       <ul>
         <li v-for="post in hotPosts" class="hot-post">
-          <p class="post-date">{{post.date}}</p>
-          <a href="#">{{post.title}}</a>
+          <p class="post-date">{{ post.date }}</p>
+          <a href="#">{{ post.title }}</a>
         </li>
       </ul>
     </div>
@@ -23,9 +23,9 @@ export default {
   components: {
     Carousel,
   },
-  data(){
+  data() {
     return {
-      hotPosts:[
+      hotPosts: [
         {
           date: '2021-10-20',
           title: '南方公园主题站上线啦'
@@ -81,22 +81,26 @@ export default {
   box-sizing: border-box;
   font-size: 14px;
 }
-#hot p{
+
+#hot p {
   font-weight: 600;
 }
-#hot .post-date{
+
+#hot .post-date {
   font-size: 13px;
   margin-bottom: 5px;
   font-weight: normal;
   color: #333;
 }
-#hot ul li{
+
+#hot ul li {
   height: 44px;
   margin: 15px 0;
-  border-bottom: 2px solid rgba(200,200,200,.7);
+  border-bottom: 2px solid rgba(200, 200, 200, .7);
   padding-left: 7px;
 }
-#hot ul li a{
+
+#hot ul li a {
   color: #2877ee;
 }
 </style>

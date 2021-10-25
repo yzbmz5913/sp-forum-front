@@ -8,6 +8,7 @@
 
 <script>
 import Header from "./components/header/Header";
+
 export default {
   components: {
     Header,
@@ -17,7 +18,7 @@ export default {
     //if(!jwt)return
     // let user = getUserDetail from backend api
     // if(!user)return
-    this.$store.commit('changeUserProfile',{
+    this.$store.commit('changeUserProfile', {
       uid: 1,
       username: 'stan marsh',
       desc: '我是stan哦，我喜欢玩风暴英雄我是stan哦，我喜欢玩风暴英雄我是stan哦，我喜欢玩风暴英雄我是stan哦，我喜欢玩风暴英雄我是stan哦，我喜欢玩风暴英雄我是stan哦，我喜欢玩风暴英雄我是stan哦，我喜欢玩风暴',
@@ -30,16 +31,17 @@ export default {
 <style>
 @import "assets/css/common.css";
 @import "assets/font/iconfont.css";
-.mask{
+
+.mask {
   height: 100%;
   width: 100%;
-  background-color: rgba(100,100,100,0.5);
+  background-color: rgba(100, 100, 100, 0.5);
   position: fixed;
   top: 0;
   z-index: 2;
 }
 
-.router-link-active{
+.router-link-active {
   font-weight: 600;
 }
 </style>

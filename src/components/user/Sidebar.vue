@@ -1,7 +1,8 @@
 <template>
   <div class="sb card">
     <ul>
-      <router-link v-if="authRes" :to="$route.fullPath.substring(0,$route.fullPath.lastIndexOf('/'))+'/notification'" tag="li">
+      <router-link v-if="authRes" :to="$route.fullPath.substring(0,$route.fullPath.lastIndexOf('/'))+'/notification'"
+                   tag="li">
         通知<span class="icon iconfont icon-messagecenter"></span>
       </router-link>
       <router-link :to="$route.fullPath.substring(0,$route.fullPath.lastIndexOf('/'))+'/posts'" tag="li">
@@ -10,7 +11,8 @@
       <router-link :to="$route.fullPath.substring(0,$route.fullPath.lastIndexOf('/'))+'/fav'" tag="li">
         收藏<span class="icon iconfont icon-collection"></span>
       </router-link>
-      <router-link v-if="authRes" :to="$route.fullPath.substring(0,$route.fullPath.lastIndexOf('/'))+'/history'" tag="li">
+      <router-link v-if="authRes" :to="$route.fullPath.substring(0,$route.fullPath.lastIndexOf('/'))+'/history'"
+                   tag="li">
         历史<span class="icon iconfont icon-history"></span>
       </router-link>
       <router-link :to="$route.fullPath.substring(0,$route.fullPath.lastIndexOf('/'))+'/following'" tag="li">
@@ -26,7 +28,7 @@
 <script>
 export default {
   name: "Sidebar",
-  data(){
+  data() {
     return {
       authRes: true
     }

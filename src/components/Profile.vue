@@ -1,43 +1,42 @@
 <template>
-<div id="face" :style="bgi">
+  <div id="face" :style="bgi">
 
-</div>
+  </div>
 </template>
 
 <script>
 export default {
   name: "Profile",
-  props:{
-    'size':{
+  props: {
+    'size': {
       default: 32
     },
-    'faceUrl':{
+    'faceUrl': {
       type: String
     }
   },
-  data(){
-    return{
-      bgi:{
-        height: this.size+'px',
-        width: this.size+'px',
+  data() {
+    return {
+      bgi: {
+        height: this.size + 'px',
+        width: this.size + 'px',
         backgroundImage: `url(${this.faceUrl})`
       }
     }
   },
-  methods:{
-
-  }
+  methods: {}
 }
 </script>
 
 <style scoped>
-#face{
+#face {
   display: inline-block;
   background-repeat: no-repeat;
   background-size: 100% 100%;
   border-radius: 50%;
 }
-#face:hover{
+
+#face:hover {
   cursor: pointer;
 }
 </style>

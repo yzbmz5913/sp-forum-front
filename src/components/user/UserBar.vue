@@ -73,8 +73,8 @@ export default {
       }
       if (newPwd) changeUserProfileReq.pwd = newPwd
 
-      let success=true //todo call backend api，校验是否修改成功
-      if(success){
+      let success = true //todo call backend api，校验是否修改成功
+      if (success) {
         location.reload()
       }
       return false

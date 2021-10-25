@@ -9,6 +9,7 @@
               :date="post.date"
               :images="post.images"
               :owner="post.owner"
+              :id="post.id"
               left-w="400"
         ></post>
       </li>
@@ -22,13 +23,14 @@ import Post from "../../components/Post";
 
 export default {
   name: "Fav",
-  components:{
+  components: {
     Post,
   },
-  data(){
+  data() {
     return {
       posts: [
         {
+          id: 1,
           title: '我爱坦子',
           abstract: '我爱坦子，啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦',
           images: [{
@@ -44,6 +46,7 @@ export default {
           date: utils.abs2rel('2021-10-20 19:23:23')
         },
         {
+          id: 1,
           title: '我爱坦子',
           abstract: '我爱坦子，啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦',
           images: [],
@@ -57,6 +60,7 @@ export default {
           date: utils.abs2rel('2021-10-20 18:33:23')
         },
         {
+          id: 1,
           title: '我爱坦子',
           abstract: '我爱坦子，啦啦啦',
           images: [],
@@ -72,8 +76,8 @@ export default {
       ],
     }
   },
-  methods:{
-    numFlow(num){
+  methods: {
+    numFlow(num) {
       return utils.numFlow(num)
     }
   }

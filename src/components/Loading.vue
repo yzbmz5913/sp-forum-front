@@ -1,7 +1,7 @@
 <template>
-<div class="loading">
+  <div class="loading">
 
-</div>
+  </div>
 </template>
 
 <script>
@@ -11,7 +11,7 @@ export default {
 </script>
 
 <style scoped>
-.loading{
+.loading {
   background-image: url("../assets/img/loading.svg");
 }
 </style>

@@ -8,6 +8,7 @@
 <script>
 import Recommend from "../components/Recommend";
 import Posts from "../components/Posts";
+
 export default {
   name: 'Home',
   components: {

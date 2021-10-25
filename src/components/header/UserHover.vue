@@ -1,21 +1,21 @@
 <template>
-<div class="uh"
-:style="{width: `${w}px`, color: c}">
-  <span class="icon iconfont icon-dengchu" @click="logout()"></span>
-</div>
+  <div class="uh"
+       :style="{width: `${w}px`, color: c}">
+    <span class="icon iconfont icon-dengchu" @click="logout()"></span>
+  </div>
 </template>
 
 <script>
 export default {
   name: "UserHover",
-  data(){
+  data() {
     return {
-      w:36,
-      c:'rgba(188,188,188,0)',
+      w: 36,
+      c: 'rgba(188,188,188,0)',
     }
   },
-  methods:{
-    logout(){
+  methods: {
+    logout() {
       //logout api
       this.$store.commit('logout')
       location.reload()
@@ -25,21 +25,23 @@ export default {
 </script>
 
 <style scoped>
-.uh{
+.uh {
   height: 36px;
   border-radius: 18px;
   position: relative;
-  box-shadow: 0 0 5px rgba(100,100,100,0.4) inset;
+  box-shadow: 0 0 5px rgba(100, 100, 100, 0.4) inset;
   transition: all 400ms;
 }
-.uh span{
+
+.uh span {
   font-size: 20px;
   line-height: 36px;
   position: absolute;
   right: 8px;
 }
-.uh span:hover{
+
+.uh span:hover {
   cursor: pointer;
-  color: rgb(144,144,144);
+  color: rgb(144, 144, 144);
 }
 </style>

@@ -1,30 +1,32 @@
 <template>
-<div class="user-right">
-  <ul>
-    <li v-for="u in users">
-      <user-card :username="u.username" :desc="u.desc" :uid="u.uid" :is-follow="u.isFollow" :face-url="u.faceUrl"></user-card>
-    </li>
-  </ul>
-</div>
+  <div class="user-right">
+    <ul>
+      <li v-for="u in users">
+        <user-card :username="u.username" :desc="u.desc" :uid="u.uid" :is-follow="u.isFollow"
+                   :face-url="u.faceUrl"></user-card>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
 import UserCard from "../../components/user/UserCard";
+
 export default {
   name: "Follower",
-  components:{
+  components: {
     UserCard
   },
-  data(){
+  data() {
     return {
-      users:[],
+      users: [],
     }
   },
   watch: {
-    '$route':{
-      handler(to,from){
-        if(to.fullPath.includes('follower')){
-          this.users=[
+    '$route': {
+      handler(to, from) {
+        if (to.fullPath.includes('follower')) {
+          this.users = [
             {
               uid: 2,
               username: 'kyle broflovski',
@@ -40,8 +42,8 @@ export default {
               isFollow: true,
             },
           ]
-        }else{
-          this.users=[
+        } else {
+          this.users = [
             {
               uid: 4,
               username: 'eric cartman',

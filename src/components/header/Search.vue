@@ -12,10 +12,11 @@ export default {
 </script>
 
 <style scoped>
-.search{
+.search {
   font-size: 14px;
   position: relative;
 }
+
 .search input {
   display: block;
   height: 30px;
@@ -43,7 +44,7 @@ export default {
   cursor: pointer;
 }
 
-.search .search-btn:hover{
+.search .search-btn:hover {
   background-color: #bbb;
   color: #999;
 }
