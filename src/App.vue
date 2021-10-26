@@ -38,7 +38,7 @@ export default {
   background-color: rgba(100, 100, 100, 0.5);
   position: fixed;
   top: 0;
-  z-index: 2;
+  z-index: 3;
 }
 
 .router-link-active {

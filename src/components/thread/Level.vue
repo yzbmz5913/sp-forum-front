@@ -29,6 +29,11 @@
             </span>
             </td>
             <td>
+            <span @click="changeCollect()">
+              <stat class="collect" :icon="isCollect?'icon-collection-fill':'icon-collection'" fs="18"></stat>
+            </span>
+            </td>
+            <td>
             <span @click="">
               <stat class="bin" icon="icon-ashbin" fs="18" v-if="isSelf"></stat>
             </span>
@@ -67,6 +72,7 @@ export default {
       isFav: this.fav,
       cnt: this.favNum,
       showReplies: true,
+      isCollect: false,
     }
   },
   computed: {
@@ -80,7 +86,7 @@ export default {
   },
   methods: {
     changeFav() {
-      //change fav api
+      //call fav api
       if (this.isFav) {
         this.cnt--;
       } else {
@@ -90,6 +96,10 @@ export default {
     },
     toggleReply() {
       this.showReplies = !this.showReplies
+    },
+    changeCollect() {
+      //call collect api
+      this.isCollect = !this.isCollect
     }
   }
 }
@@ -141,7 +151,7 @@ export default {
 .bottom {
   width: 18%;
   margin-top: 10px;
-  margin-left: 78%;
+  margin-left: 75%;
   user-select: none;
   cursor: pointer;
   color: #666;
@@ -151,8 +161,8 @@ table {
   width: 180px;
 }
 
-table tr td {
-  width: 37%;
+table tr td:nth-child(1) {
+  width: 36%;
 }
 
 table tr td:nth-child(2) {

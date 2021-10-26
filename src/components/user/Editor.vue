@@ -1,5 +1,5 @@
 <template>
-  <div class="e card">
+  <div class="e">
     <div class="left">
       <div id="p">
         <profile size="80" :face-url="faceUrl" style="cursor: auto"></profile>
@@ -66,7 +66,7 @@ export default {
 
 <style scoped>
 .e {
-  height: 100%;
+  height: 300px;
   width: 100%;
   position: relative;
   display: flex;

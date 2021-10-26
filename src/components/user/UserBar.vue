@@ -20,52 +20,32 @@
       <div><span class="k">关注：</span><span class="v">23</span></div>
       <div><span class="k">粉丝：</span><span class="v">15</span></div>
     </div>
-
-    <div class="editor" v-show="$store.state.shouldMask">
-      <editor ref="editor"></editor>
-    </div>
   </div>
 </template>
 
 <script>
 import Profile from "../Profile";
-import Editor from "./Editor";
 import Btn from "../Btn";
 
 export default {
   name: "UserBar",
   components: {
     Profile,
-    Editor,
     Btn,
   },
-  computed: {
-    lis() {
-      return event => {
-        let e = document.querySelector('.editor')
-        let l = e.offsetLeft, t = e.offsetTop
-        let r = l + e.offsetWidth, b = t + e.offsetHeight
-        let x = event.clientX, y = event.clientY
-        if (this.$store.state.shouldMask && x < l || x > r || y < t || y > b) {
-          let succeed = this.commitEdition()
-          if (succeed) {
-            this.$store.commit('mask', false)
-            window.removeEventListener('mousedown', this.lis, {capture: true})
-          }
-        }
-      }
-    }
-  },
   methods: {
-    edit() {
-      this.$store.commit('mask', true)
-      window.addEventListener('mousedown', this.lis, {capture: true})
+    async edit() {
+      this.$store.commit('mask', 'hover_editor')
+      window.addEventListener('mousedown', this.$store.state.lis('hover_editor'), {capture: true})
+      if (await this.$store.state.delConfirm) {
+        this.commitEdition()
+      }
     },
     commitEdition() {
-      let newUsername = this.$refs.editor.username
-      let newDesc = this.$refs.editor.desc
-      let newFace = this.$refs.editor.faceUrl
-      let newPwd = this.$refs.editor.pwd
+      let newUsername = this.$parent.$refs.editor['username']
+      let newDesc = this.$parent.$refs.editor['desc']
+      let newFace = this.$parent.$refs.editor['faceUrl']
+      let newPwd = this.$parent.$refs.editor['pwd']
       let changeUserProfileReq = {
         username: newUsername,
         desc: newDesc,
@@ -152,13 +132,5 @@ export default {
   color: #2877ee;
 }
 
-.editor {
-  --w: 500px;
-  width: var(--w);
-  height: 300px;
-  position: fixed;
-  top: 200px;
-  left: calc(50% - 0.5 * var(--w));
-  z-index: 99;
-}
+
 </style>

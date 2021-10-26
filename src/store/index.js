@@ -3,16 +3,36 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+let id2Lis = {}
+
 export default new Vuex.Store({
     state: {
         shouldMask: false,
         user: {},
         delConfirmResolve: null,
         delConfirm: null,
+        lis: function (id) {
+            if (id2Lis[id]) return id2Lis[id]
+            this.delConfirm = new Promise(resolve => {
+                this.delConfirmResolve = resolve
+            })
+            let listener = function (event) {
+                let e = document.querySelector('#' + id)
+                let l = e.offsetLeft, t = e.offsetTop
+                let r = l + e.offsetWidth, b = t + e.offsetHeight
+                let x = event.clientX, y = event.clientY
+                if (this.shouldMask && x < l || x > r || y < t || y > b) {
+                    this.shouldMask = false
+                    window.removeEventListener('mousedown', listener, {capture: true})
+                }
+            }.bind(this)
+            id2Lis[id] = listener
+            return listener
+        },
     },
     mutations: {
-        mask(state, flag) {
-            state.shouldMask = flag
+        mask(state, id) {
+            state.shouldMask = id
         },
         changeUserProfile(state, payload) {
             state.user.uid = payload.uid
@@ -26,11 +46,13 @@ export default new Vuex.Store({
         logout(state) {
             localStorage.removeItem('jwt')
         },
-        delConfirmReset(state){
-            state.delConfirmResolve=null
-            state.delConfirm=new Promise(resolve=>{state.delConfirmResolve=resolve})
+        delConfirmReset(state) {
+            state.delConfirm = new Promise(resolve => {
+                state.delConfirmResolve = resolve
+            })
         },
-        delConfirmCommit(state,confirm){
+        delConfirmCommit(state, confirm) {
+            console.log(state.delConfirmResolve)
             state.delConfirmResolve(confirm)
         }
     },

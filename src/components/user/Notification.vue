@@ -5,10 +5,9 @@
     </div>
     <div class="right">
       <div class="abstract">
-        <a href="#" @click="c()">{{ from.name }}&nbsp;</a>
+        <a @click="c()">{{ from.name }}&nbsp;</a>
         <span v-if="type===1">关注了你</span>
-        <span v-else>{{ action }}了你的帖子<a href="#"
-                                         @click="$router.push('/thread/'+post.id)">&nbsp;{{ post.title }}</a></span>
+        <span v-else>{{ action }}了你的帖子<a @click="$router.push('/thread/'+post.id)">&nbsp;{{ post.title }}</a></span>
       </div>
       <div class="content ellipsis" v-if="type===3">
         {{ content }}

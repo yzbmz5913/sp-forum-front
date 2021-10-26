@@ -36,6 +36,7 @@
                   <stat class="bin" icon="icon-ashbin" fs="18" v-if="isSelf(reply.owner.uid)"></stat>
                 </span>
                 </td>
+                <td></td>
               </tr>
             </table>
           </div>
@@ -43,8 +44,9 @@
       </li>
     </transition-group>
     <div class="msg-box">
-      <textarea cols="30" rows="4" class="ta" :placeholder="ph" v-model="text"></textarea>
-      <span>{{ text.length }}/200</span>
+      <!--      <textarea cols="30" rows="4" class="ta" :placeholder="ph" v-model="text"></textarea>-->
+      <editor ref="ed" toolbar_el="toolbar_el" text_el="text_el" h="130" w="650" @textChange="replyTextChange"></editor>
+      <span>{{ replyLength }}/200</span>
       <btn text="回复" class="btn"></btn>
     </div>
   </div>
@@ -55,10 +57,11 @@ import Stat from "../Stat";
 import Btn from "../Btn";
 import Profile from "../Profile";
 import utils from "../../assets/js/utils";
+import Editor from "./Editor";
 
 export default {
   name: "reply",
-  components: {Profile, Btn, Stat},
+  components: {Editor, Profile, Btn, Stat},
   props: [
     'replies',
     'ownerUid',
@@ -69,7 +72,7 @@ export default {
       reps: this.replies,
       uid2name: {},
       replyTo: this.ownerUid,
-      text: '',
+      replyLength: 0,
     }
   },
   created() {
@@ -108,11 +111,17 @@ export default {
       } else {
         this.replyTo = cur
       }
+      let ph = document.querySelector('.msg-box #text_el .w-e-text-container .placeholder')
+      ph.innerHTML = this.ph
+    },
+    replyTextChange(len) {
+      this.replyLength = len
     },
     async delReply(rid) {
-      this.$store.commit('mask',true)
-      this.$store.commit('delConfirmReset')
-      if(!await this.$store.state.delConfirm)return
+      this.$store.commit('mask', 'hover_delReply')
+      window.addEventListener('mousedown', this.$store.state.lis('hover_delReply'), {capture: true})
+
+      if (!await this.$store.state.delConfirm) return
       //todo call backend api
       let l = 0, r = this.reps.length - 1
       let res = -1
@@ -137,6 +146,9 @@ export default {
       }
       return ''
     },
+  },
+  mounted() {
+    console.log(this.$refs)
   }
 }
 </script>
@@ -168,7 +180,7 @@ export default {
 }
 
 .bottom {
-  margin-left: 78%;
+  margin-left: 75%;
   user-select: none;
   cursor: pointer;
   color: #666;
@@ -186,8 +198,8 @@ table {
   width: 180px;
 }
 
-table tr td {
-  width: 37%;
+table tr td:nth-child(1) {
+  width: 36%;
 }
 
 table tr td:nth-child(2) {
@@ -210,7 +222,9 @@ textarea {
 }
 
 .btn {
-  margin-left: 65%;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  margin-left: 68%;
 }
 
 .msg-box span {
@@ -224,9 +238,7 @@ textarea {
   transition: all .3s;
 }
 
-.replies-change-enter, .replies-change-leave-to
-  /* .list-complete-leave-active for below version 2.1.8 */
-{
+.replies-change-enter, .replies-change-leave-to {
   opacity: 0;
   transform: translateX(30px);
 }
