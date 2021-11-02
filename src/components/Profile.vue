@@ -1,7 +1,6 @@
 <template>
-  <div id="face" :style="bgi">
+  <img id="face" :style="sz" alt="" :src="faceUrl">
 
-  </div>
 </template>
 
 <script>
@@ -17,10 +16,9 @@ export default {
   },
   data() {
     return {
-      bgi: {
+      sz: {
         height: this.size + 'px',
         width: this.size + 'px',
-        backgroundImage: `url(${this.faceUrl})`
       }
     }
   },

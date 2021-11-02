@@ -24,7 +24,6 @@
 <script>
 import Profile from "./Profile";
 import Stat from "./Stat";
-
 export default {
   name: "Post",
   components: {
@@ -46,7 +45,7 @@ export default {
 
 <style scoped>
 .post {
-  margin-bottom: 8px;
+  margin-bottom: 15px;
   padding: 10px 10px 10px 15px;
 }
 

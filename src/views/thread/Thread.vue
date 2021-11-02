@@ -5,19 +5,25 @@
     </div>
     <ul>
       <li v-for="l in levels">
-        <level :face-url="l.owner.faceUrl"
-               :fav="l.fav"
+        <level :fav="l.fav"
                :fav-num="l.favNum"
                :reply-num="l.replies.length"
                :owner="l.owner"
                :content="l.content"
                :date="l.date"
                :replies="l.replies"
-               :images="l.images"></level>
+               :images="l.images"
+               :is-root="l.isRoot"
+               :lid="l.lid"></level>
       </li>
     </ul>
 
     <hover-box id="hover_delReply" t="300" w="200">
+      <template v-slot:content>
+        <p style="text-align: center;margin: 15% auto;">是否确认删除回复？</p>
+      </template>
+    </hover-box>
+    <hover-box id="hover_delLevel" t="300" w="200">
       <template v-slot:content>
         <p style="text-align: center;margin: 15% auto;">是否确认删除？</p>
       </template>
@@ -25,14 +31,13 @@
     <hover-box id="hover_levelCreator" t="100" w="800">
       <template v-slot:content>
         <div id="te">
-          <input type="text" class="t" placeholder="标题..." autofocus="autofocus">
-          <editor class="e" el="thread_editor" h="300" w="700"></editor>
+          <editor ref="editor" class="e" el="thread_editor" h="300" w="700"></editor>
         </div>
       </template>
     </hover-box>
 
     <div class="bottom">
-      <pager :page-nums="this.pageNums" :total-page="this.totalPage"></pager>
+      <pager :total-page="this.totalPage"></pager>
     </div>
 
     <side-tool :count="2" class="st">
@@ -63,6 +68,7 @@ export default {
   data() {
     return {
       title: '风暴英雄使我快乐',
+      id: 1,
       curPage: 1,
       totalPage: 1,
       pageNums: [],
@@ -74,6 +80,7 @@ export default {
             username: 'stan marsh',
             faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg',
           },
+          isRoot: true,
           fav: false,
           favNum: 4231,
           title: '风暴英雄使我快乐',
@@ -89,7 +96,7 @@ export default {
               owner: {
                 uid: 3,
                 username: 'kenny mccormick',
-                faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg',
+                faceUrl: 'https://img0.baidu.com/it/u=668882205,3932911443&fm=26&fmt=auto',
               },
               to: 1,
               content: '斯坦你好！我也喜欢风暴英雄。我也喜欢风暴英雄。我也喜欢风暴英雄。我也喜欢风暴英雄。我也喜欢风暴英雄。我也喜欢风暴英雄。我也喜欢风暴英雄。我也喜欢风暴英雄。',
@@ -102,7 +109,7 @@ export default {
               owner: {
                 uid: 2,
                 username: 'kyle broflovski',
-                faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg',
+                faceUrl: 'https://img0.baidu.com/it/u=216031677,97581716&fm=15&fmt=auto',
               },
               to: 3,
               content: '肯尼你好，我也喜欢斯坦。我也喜欢斯坦。我也喜欢斯坦。我也喜欢斯坦。我也喜欢斯坦。我也喜欢斯坦。',
@@ -123,9 +130,15 @@ export default {
     }
   },
   methods: {
-    createLevel() {
+    async createLevel() {
       this.$store.commit('mask', 'hover_levelCreator')
       window.addEventListener('mousedown', this.$store.state.lis('hover_levelCreator'), {capture: true})
+      if(!await this.$store.state.delConfirm){
+        return
+      }
+      let html = this.$refs.editor.editor.txt.html();
+      let content = html.substring(3, html.length - 4)
+      // todo call create level API
     },
     top() {
       window.scrollTo({
@@ -203,24 +216,10 @@ export default {
   color: #444;
 }
 
-#hover_levelCreator .t {
-  display: block;
-  height: 40px;
-  width: 700px;
-  border: none;
-  outline: none;
-  font-size: 23px;
-  font-weight: bold;
-  line-height: 40px;
-  background-color: rgba(0, 0, 0, 0.1);
-  text-indent: 15px;
-  margin: 25px auto 15px auto;
-}
-
 #hover_levelCreator #te {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 20px;
+  margin: 20px;
 }
 </style>

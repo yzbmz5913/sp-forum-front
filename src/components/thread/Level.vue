@@ -1,14 +1,14 @@
 <template>
   <div class="level card clearfix">
     <div class="left">
-      <profile class="pro" size="60" :face-url="faceUrl"></profile>
+      <profile class="pro" size="60" :face-url="owner.faceUrl"></profile>
     </div>
     <div class="right">
       <div class="top">
         <span class="title">{{ owner.username }}</span>
         <span class="date">{{ relDate }}</span>
       </div>
-      <div class="content">
+      <div class="content" :style="{color: color}">
         {{ content }}
       </div>
       <div class="images">
@@ -34,7 +34,7 @@
             </span>
             </td>
             <td>
-            <span @click="">
+            <span @click="delLevel()">
               <stat class="bin" icon="icon-ashbin" fs="18" v-if="isSelf"></stat>
             </span>
             </td>
@@ -42,7 +42,7 @@
         </table>
       </div>
       <transition name="show-reply-box">
-        <reply v-show="showReplies" :owner-uid="owner.uid" :owner-username="owner.username" :replies="replies"></reply>
+        <reply v-show="showReplies" :owner-uid="owner.uid" :owner-username="owner.username" :replies="replies" :lid="lid"></reply>
       </transition>
     </div>
   </div>
@@ -57,7 +57,7 @@ import Reply from "./Reply";
 export default {
   name: "level",
   components: {Reply, Stat, Profile},
-  props: ['faceUrl',
+  props: [
     'fav',
     'favNum',
     'replyNum',
@@ -66,6 +66,8 @@ export default {
     'date',
     'replies',
     'images',
+    'isRoot',
+    'lid',
   ],
   data() {
     return {
@@ -73,6 +75,8 @@ export default {
       cnt: this.favNum,
       showReplies: true,
       isCollect: false,
+      color: '#333',
+      worker: null,
     }
   },
   computed: {
@@ -100,7 +104,74 @@ export default {
     changeCollect() {
       //call collect api
       this.isCollect = !this.isCollect
+    },
+    async delLevel() {
+      this.$store.commit('mask', 'hover_delLevel')
+      window.addEventListener('mousedown', this.$store.state.lis('hover_delLevel'), {capture: true})
+
+      if (!await this.$store.state.delConfirm) return
+      if(this.isRoot){
+        //call delThread api
+        await this.$router.push('/')
+      }else{
+        //call delLevel api
+      }
     }
+  },
+  mounted() {
+    let canvas = document.createElement('canvas')
+    let img = document.querySelector('.thread .level .left .pro')
+    img.setAttribute('crossOrigin', '')
+    let ctx = canvas.getContext('2d')
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, img.width, img.height)
+      this.worker = this['$worker'].run((data) => {
+        function ColorBox(colorRange, total, data) {
+          this.total = total
+          this.data = data
+        }
+
+        ColorBox.prototype.getColor = function () {
+          let total = this.total
+          let data = this.data
+          let redCount = 0, greenCount = 0, blueCount = 0
+          for (let i = 0; i < total; i++) {
+            redCount += data[i * 4]
+            greenCount += data[i * 4 + 1]
+            blueCount += data[i * 4 + 2]
+          }
+          return [Math.round(redCount / total), Math.round(greenCount / total), Math.round(blueCount / total)]
+        }
+        let total = data.length / 4
+        let rMin = 255, rMax = 0,
+            gMin = 255, gMax = 0,
+            bMin = 255, bMax = 0
+        for (let i = 0; i < total; i++) {
+          let red = data[i * 4], green = data[i * 4 + 1], blue = data[i * 4 + 2]
+          if (red < rMin) rMin = red
+          if (red > rMax) rMax = red
+          if (green < gMin) gMin = green
+          if (green > gMax) gMax = green
+          if (blue < bMin) bMin = blue
+          if (blue > bMax) bMax = blue
+        }
+        let colorRange = [[rMin, rMax], [gMin, gMax], [bMin, bMax]]
+        let colorBox = new ColorBox(colorRange, total, data)
+        return colorBox.getColor()
+      }, [ctx.getImageData(0, 0, img.width, img.height).data]).then(res => {
+        let color = '#'
+        for (let c of res) {
+          c = Math.floor(c * 0.9)
+          let hex = c['toString'](16)
+          if (hex.length === 1) hex = '0' + hex
+          color += hex
+        }
+        this.color = color
+      })
+    }
+  },
+  destroyed() {
+    this.worker = null
   }
 }
 </script>

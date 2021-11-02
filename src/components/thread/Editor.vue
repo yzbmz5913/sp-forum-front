@@ -14,7 +14,6 @@
 
 <script>
 import E from 'wangeditor'
-import Vue from "vue";
 
 export default {
   name: 'Editor',
@@ -36,6 +35,7 @@ export default {
           'emoticon',
           'image',
         ]
+        this.editor.config.uploadImgServer = 'http://localhost:8080/uploadImg'
       } else if (this.toolbar_el && this.text_el) {
         this.editor = new E('#' + this.toolbar_el, '#' + this.text_el);
         this.editor.config.menus = [
@@ -44,7 +44,7 @@ export default {
         this.editor.config.onchange = (newHTML) => {
           let tmp = document.createElement('div');
           tmp.innerHTML = newHTML.replaceAll(/<(\w+)>(.*)<\/\1>/g, '$2')
-          this.$emit('textChange', tmp.textContent.length)
+          this.$emit('textChange', tmp.textContent)
           tmp = null
         }
       }

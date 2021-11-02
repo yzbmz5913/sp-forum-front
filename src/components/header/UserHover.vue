@@ -17,7 +17,7 @@ export default {
   methods: {
     logout() {
       //logout api
-      this.$store.commit('logout')
+      localStorage.removeItem('jwt')
       location.reload()
     }
   }

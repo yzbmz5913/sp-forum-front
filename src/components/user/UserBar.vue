@@ -20,45 +20,59 @@
       <div><span class="k">关注：</span><span class="v">23</span></div>
       <div><span class="k">粉丝：</span><span class="v">15</span></div>
     </div>
+
+    <hover-box id="hover_editor" t="200" w="500">
+      <template v-slot:content>
+        <editor ref="editor"></editor>
+      </template>
+    </hover-box>
   </div>
 </template>
 
 <script>
 import Profile from "../Profile";
 import Btn from "../Btn";
+import HoverBox from "../HoverBox";
+import Editor from "./Editor";
 
 export default {
   name: "UserBar",
   components: {
     Profile,
     Btn,
+    HoverBox,
+    Editor,
   },
   methods: {
     async edit() {
       this.$store.commit('mask', 'hover_editor')
       window.addEventListener('mousedown', this.$store.state.lis('hover_editor'), {capture: true})
-      if (await this.$store.state.delConfirm) {
-        this.commitEdition()
-      }
+      if(!await this.$store.state.delConfirm)return
+      this.commitEdition()
     },
     commitEdition() {
-      let newUsername = this.$parent.$refs.editor['username']
-      let newDesc = this.$parent.$refs.editor['desc']
-      let newFace = this.$parent.$refs.editor['faceUrl']
-      let newPwd = this.$parent.$refs.editor['pwd']
+      let newUsername = this.$refs.editor['username']
+      let newDesc = this.$refs.editor['desc']
+      let newFace = this.$refs.editor['faceUrl']
+      let oldPwd = this.$refs.editor['oldPwd']
+      let newPwd = this.$refs.editor['newPwd']
       let changeUserProfileReq = {
         username: newUsername,
         desc: newDesc,
         face: newFace,
       }
-      if (newPwd) changeUserProfileReq.pwd = newPwd
-
-      let success = true //todo call backend api，校验是否修改成功
-      if (success) {
-        location.reload()
+      if (oldPwd&&newPwd) {
+        changeUserProfileReq.newPwd = newPwd
+        changeUserProfileReq.oldPwd = oldPwd
       }
-      return false
-    }
+
+      let rsp = {msg:"旧密码不正确！"} //todo call backend api，校验是否修改成功
+      if(rsp.msg){
+        this.$store.commit('errHappens',rsp.msg)
+        return
+      }
+      location.reload()
+    },
   },
   mounted() {
   }

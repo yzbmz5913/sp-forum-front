@@ -8,7 +8,7 @@
       <li v-for="(_,idx) in images" :class="{chosen: isChosen(idx)}" @click="play(idx)"></li>
     </ul>
     <div class="next icon iconfont icon-arrow-right" @click="play(chosenIdx+1)"></div>
-    <div class="desc"><a href="#">{{ images[chosenIdx].desc }}</a></div>
+    <div class="desc"><a @click="c(images[chosenIdx].rid)">{{ images[chosenIdx].desc }}</a></div>
   </div>
 </template>
 
@@ -22,9 +22,11 @@ export default {
         {
           path: 'https://variety.com/wp-content/uploads/2021/04/South-Park-Key-Art.jpg',
           desc: '南方公园真好看',
+          rid: 1
         }, {
           path: 'https://static.onecms.io/wp-content/uploads/sites/6/2019/09/south-park-s05e08-2000.jpg',
           desc: '打电动，打电动',
+          rid: 2
         }, {
           path: 'https://images-na.ssl-images-amazon.com/images/I/818NVOPboaL._RI_.jpg',
           desc: '精选剧集: S20E06',
@@ -57,6 +59,9 @@ export default {
     },
     stopTimer() {
       clearInterval(timer)
+    },
+    c(id) {
+      this.$router.push('/thread/' + id)
     }
   },
   mounted() {

@@ -1,13 +1,25 @@
 <template>
   <div class="search">
-    <input type="text" placeholder="搜索...">
-    <div class="search-btn icon iconfont icon-search"></div>
+    <input type="text" placeholder="搜索..." v-model="keyword" @keydown.enter="search()">
+    <div class="search-btn icon iconfont icon-search" @click="search()"></div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Search"
+  name: "Search",
+  data() {
+    return {
+      keyword: '',
+    }
+  },
+  methods: {
+    search() {
+      if (!this.keyword) return
+      this.$router.push('/search?keyword=' + this.keyword)
+      this.keyword = ''
+    }
+  }
 }
 </script>
 

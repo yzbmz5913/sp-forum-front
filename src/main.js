@@ -3,8 +3,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import VueRouter from "vue-router";
+import VueWorker from 'vue-worker'
 
 Vue.config.productionTip = true
+Vue.use(VueWorker)
 
 new Vue({
     router,

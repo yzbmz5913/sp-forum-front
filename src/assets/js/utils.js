@@ -33,5 +33,4 @@ export default {
     isLoginCached() {
         return Date.now() - loginCache < 15 * 60 * 1000;
     }
-
 }

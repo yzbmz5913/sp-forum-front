@@ -8,7 +8,7 @@
       <ul>
         <li v-for="post in hotPosts" class="hot-post">
           <p class="post-date">{{ post.date }}</p>
-          <a href="#">{{ post.title }}</a>
+          <a @click="c(post.id)">{{ post.title }}</a>
         </li>
       </ul>
     </div>
@@ -28,11 +28,13 @@ export default {
       hotPosts: [
         {
           date: '2021-10-20',
-          title: '南方公园主题站上线啦'
+          title: '南方公园主题站上线啦',
+          id: 1,
         },
         {
           date: '2021-10-19',
-          title: '坦子生日快乐'
+          title: '坦子生日快乐',
+          id: 2,
         },
         {
           date: '2021-10-21',
@@ -52,6 +54,14 @@ export default {
         }
       ]
     }
+  },
+  methods:{
+    c(id){
+      this.$router.push('/thread/'+id)
+    }
+  },
+  created() {
+
   }
 }
 </script>

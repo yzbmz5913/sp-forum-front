@@ -16,19 +16,28 @@
           <td><input type="text" placeholder="2~24个字符" v-model="username"></td>
         </tr>
         <tr>
-          <td><span>密码：</span></td>
+          <td><span>旧密码：</span></td>
           <td>
-            <input :type="pwdVisible?'text':'password'" placeholder="8~18位的字母与数字组合" v-model="pwd">
+            <input :type="pwdVisible?'text':'password'" v-model="oldPwd">
+            <span class="icon iconfont" :class="{'icon-browse':pwdVisible,'icon-Notvisible':!pwdVisible}"
+                  @click="pwdVisible=!pwdVisible"></span>
+          </td>
+        </tr>
+        <tr>
+          <td><span>新密码：</span></td>
+          <td>
+            <input :type="pwdVisible?'text':'password'" placeholder="8~18位的字母与数字组合" v-model="newPwd">
             <span class="icon iconfont" :class="{'icon-browse':pwdVisible,'icon-Notvisible':!pwdVisible}"
                   @click="pwdVisible=!pwdVisible"></span>
           </td>
         </tr>
         <tr>
           <td><span>个人简介：<br>({{ desc.length + '/' + 110 }})</span></td>
-          <td><textarea name="desc" v-model="desc" cols="30" rows="9" placeholder="不超过110个字符"></textarea></td>
+          <td><textarea name="desc" v-model="desc" cols="30" rows="7" placeholder="不超过110个字符"></textarea></td>
         </tr>
       </table>
     </div>
+
 
   </div>
 </template>
@@ -45,7 +54,8 @@ export default {
       desc: this.$store.state.user.desc,
       username: this.$store.state.user.username,
       faceUrl: this.$store.state.user.faceUrl,
-      pwd: '',
+      oldPwd: '',
+      newPwd: '',
 
       pwdVisible: false,
     }
@@ -56,7 +66,7 @@ export default {
       let file = document.querySelector('#file').files[0]
       let reader = new FileReader()
       reader.onload = () => {
-        preview.style.backgroundImage = `url('${reader.result}')`
+        preview.src = reader.result
       }
       if (file) reader.readAsDataURL(file)
     }

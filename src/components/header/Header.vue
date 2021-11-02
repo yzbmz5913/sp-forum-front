@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <img src="../../assets/img/logo.png" alt="logo" id="logo">
+    <img src="../../assets/img/logo.png" alt="logo" id="logo" @click="$router.push('/')">
     <span class="logo-text">南方公园主题站</span>
     <div class="s">
       <search></search>
@@ -44,8 +44,7 @@ export default {
       if (utils.isLogin()) {
         this.$router.push(`/user/${this.$store.state.user.uid}/notification`).catch(err => err)
       } else {
-        this.$router.push('/login')
-        this.$store.commit('login')
+        this.$router.push('/l/login')
       }
     },
     showUH() {
@@ -79,6 +78,7 @@ export default {
   padding-left: 100px;
   padding-right: 20px;
   height: 90%;
+  cursor: pointer;
 }
 
 .logo-text {

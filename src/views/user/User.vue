@@ -7,11 +7,6 @@
       <!--    <keep-alive>-->
       <router-view class="user-right"></router-view>
       <!--    </keep-alive>-->
-      <hover-box id="hover_editor" t="200" w="500">
-        <template v-slot:content>
-          <editor ref="editor"></editor>
-        </template>
-      </hover-box>
     </div>
   </div>
 </template>
@@ -19,8 +14,6 @@
 <script>
 import UserBar from "../../components/user/UserBar";
 import Sidebar from "../../components/user/Sidebar";
-import HoverBox from "../../components/HoverBox";
-import Editor from "../../components/user/Editor";
 
 let lis = () => {
   let sb = document.querySelector('.sb')
@@ -40,10 +33,8 @@ let lis = () => {
 export default {
   name: "User",
   components: {
-    HoverBox,
     UserBar,
     Sidebar,
-    Editor,
   },
   data() {
     return {

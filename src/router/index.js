@@ -48,6 +48,27 @@ const routes = [
     {
         path: '/thread/:tid',
         component: () => import('../views/thread/Thread')
+    },
+    {
+        path: '/l',
+        component: () => import('../views/login/Base'),
+        children: [
+            {
+                path: '',
+                redirect: 'login'
+            },
+            {
+                path: 'login',
+                component: () => import('../views/login/Login')
+            },{
+                path: 'register',
+                component: () => import('../views/login/Register')
+            },
+        ]
+    },
+    {
+        path: '/search',
+        component: () => import('../views/search/Search')
     }
 ]
 

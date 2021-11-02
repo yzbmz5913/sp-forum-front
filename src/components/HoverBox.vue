@@ -22,6 +22,7 @@ export default {
       this.$store.commit('mask', false)
       this.$store.commit('delConfirmCommit', true)
       window.removeEventListener('mousedown', this.$store.state.lis(this.id), {capture: true})
+      this.$store.commit('delConfirmReset')
     }
   }
 }

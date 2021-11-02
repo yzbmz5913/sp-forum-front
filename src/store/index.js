@@ -11,6 +11,8 @@ export default new Vuex.Store({
         user: {},
         delConfirmResolve: null,
         delConfirm: null,
+        errMessage: null,
+        errTimer: null,
         lis: function (id) {
             if (id2Lis[id]) return id2Lis[id]
             this.delConfirm = new Promise(resolve => {
@@ -24,6 +26,10 @@ export default new Vuex.Store({
                 if (this.shouldMask && x < l || x > r || y < t || y > b) {
                     this.shouldMask = false
                     window.removeEventListener('mousedown', listener, {capture: true})
+                    this.delConfirmResolve(false)
+                    this.delConfirm = new Promise(resolve => {
+                        this.delConfirmResolve = resolve
+                    })
                 }
             }.bind(this)
             id2Lis[id] = listener
@@ -40,20 +46,20 @@ export default new Vuex.Store({
             state.user.faceUrl = payload.faceUrl
             state.user.desc = payload.desc
         },
-        login(state) {
-            localStorage.setItem('jwt', 'jwt123')
-        },
-        logout(state) {
-            localStorage.removeItem('jwt')
-        },
         delConfirmReset(state) {
             state.delConfirm = new Promise(resolve => {
                 state.delConfirmResolve = resolve
             })
         },
         delConfirmCommit(state, confirm) {
-            console.log(state.delConfirmResolve)
             state.delConfirmResolve(confirm)
+        },
+        errHappens(state,errMsg){
+            state.errMessage = errMsg
+            clearTimeout(state.errTimer)
+            state.errTimer = setTimeout(()=>{
+                state.errMessage = null
+            },4000)
         }
     },
     actions: {},

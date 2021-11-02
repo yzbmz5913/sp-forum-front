@@ -3,15 +3,15 @@
     <transition-group name="replies-change" tag="ul">
       <li v-for="reply in reps" :key="reply.rid">
         <div class="left">
-          <profile size="36" :face-url="reply.owner.faceUrl"></profile>
+          <profile class="pro" size="36" :face-url="reply.owner.faceUrl"></profile>
         </div>
         <div class="right">
           <div class="content">
             <a @click="c(reply.owner.uid)">{{ reply.owner.username }}:&nbsp;</a>
             <span>
-            <span v-if="reply.to!==ownerUid">回复<a @click="c(reply.to)">{{ uid2name[reply.to] }}:&nbsp;</a></span>
-            {{ reply.content }}
-          </span>
+              <span v-if="reply.to!==ownerUid">回复<a @click="c(reply.to)">{{ uid2name[reply.to] }}:&nbsp;</a></span>
+              <span :class="'reply_'+reply.owner.uid">{{ reply.content }}</span>
+            </span>
           </div>
           <div class="d">
             {{ relDate(reply.date) }}
@@ -46,8 +46,8 @@
     <div class="msg-box">
       <!--      <textarea cols="30" rows="4" class="ta" :placeholder="ph" v-model="text"></textarea>-->
       <editor ref="ed" toolbar_el="toolbar_el" text_el="text_el" h="130" w="650" @textChange="replyTextChange"></editor>
-      <span>{{ replyLength }}/200</span>
-      <btn text="回复" class="btn"></btn>
+      <span>{{ content.length }}/200</span>
+      <btn text="回复" class="btn" @click.native="sendReply(content,replyTo)"></btn>
     </div>
   </div>
 </template>
@@ -66,13 +66,14 @@ export default {
     'replies',
     'ownerUid',
     'ownerUsername',
+    'lid',
   ],
   data() {
     return {
       reps: this.replies,
       uid2name: {},
       replyTo: this.ownerUid,
-      replyLength: 0,
+      content: '',
     }
   },
   created() {
@@ -114,8 +115,8 @@ export default {
       let ph = document.querySelector('.msg-box #text_el .w-e-text-container .placeholder')
       ph.innerHTML = this.ph
     },
-    replyTextChange(len) {
-      this.replyLength = len
+    replyTextChange(content) {
+      this.content = content
     },
     async delReply(rid) {
       this.$store.commit('mask', 'hover_delReply')
@@ -137,6 +138,10 @@ export default {
       }
       if (res < 0) return
       this.reps.splice(res, 1)
+      this.$store.commit('errHappens','删除回复错误！')
+    },
+    sendReply(lid,content,replyTo){
+      //todo call backend api
     }
   },
   computed: {
@@ -148,7 +153,63 @@ export default {
     },
   },
   mounted() {
-    console.log(this.$refs)
+    let canvas = document.createElement('canvas')
+    let imgs = document.querySelector('.level .replies').getElementsByClassName('pro')
+    let userSet = new Set()
+    for (let idx = 0; idx < imgs.length; idx++) {
+      let img = imgs[idx]
+      let uid = this.replies[idx].owner.uid
+      if (userSet.has(uid)) continue
+      userSet.add(uid)
+      img.setAttribute('crossOrigin', '')
+      let ctx = canvas.getContext('2d')
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, img.width, img.height)
+        this.worker = this['$worker'].run((data) => {
+          function ColorBox(colorRange, total, data) {
+            this.total = total
+            this.data = data
+          }
+
+          ColorBox.prototype.getColor = function () {
+            let total = this.total
+            let data = this.data
+            let redCount = 0, greenCount = 0, blueCount = 0
+            for (let i = 0; i < total; i++) {
+              redCount += data[i * 4]
+              greenCount += data[i * 4 + 1]
+              blueCount += data[i * 4 + 2]
+            }
+            return [Math.round(redCount / total), Math.round(greenCount / total), Math.round(blueCount / total)]
+          }
+          let total = data.length / 4
+          let rMin = 255, rMax = 0,
+              gMin = 255, gMax = 0,
+              bMin = 255, bMax = 0
+          for (let i = 0; i < total; i++) {
+            let red = data[i * 4], green = data[i * 4 + 1], blue = data[i * 4 + 2]
+            if (red < rMin) rMin = red
+            if (red > rMax) rMax = red
+            if (green < gMin) gMin = green
+            if (green > gMax) gMax = green
+            if (blue < bMin) bMin = blue
+            if (blue > bMax) bMax = blue
+          }
+          let colorRange = [[rMin, rMax], [gMin, gMax], [bMin, bMax]]
+          let colorBox = new ColorBox(colorRange, total, data)
+          return colorBox.getColor()
+        }, [ctx.getImageData(0, 0, img.width, img.height).data]).then(res => {
+          let color = '#'
+          for (let c of res) {
+            c = Math.floor(c * 0.9)
+            let hex = c['toString'](16)
+            if (hex.length === 1) hex = '0' + hex
+            color += hex
+          }
+          document.querySelector('.replies .right .content .reply_' + this.replies[idx].owner.uid).style.color = color
+        })
+      }
+    }
   }
 }
 </script>
