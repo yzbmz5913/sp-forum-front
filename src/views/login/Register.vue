@@ -28,6 +28,7 @@
 
 <script>
 import Btn from "../../components/Btn";
+import api from "../../assets/js/api";
 export default {
   name: "Register",
   components: {Btn},
@@ -41,8 +42,21 @@ export default {
   },
   methods:{
     register(){
-      //call register api
-      this.$router.push('/l/login')
+      api.register(this.username,this.pwd,this.pwdRepeat).then(rsp=>{
+        let data=rsp.data
+        if(data['code']===0){
+          let ud=data['payload']
+          this.$store.commit('changeUserProfile', {
+            uid: ud['uid'],
+            username: ud['username'],
+            desc: ud['desc'],
+            faceUrl: ud['face_url'],
+          })
+          this.$router.push('/')
+        }else{
+          this.$store.commit('errHappens',data['msg'])
+        }
+      })
     }
   }
 }

@@ -1,4 +1,6 @@
-let loginCache;
+import api from "./api";
+
+let loginCache = 0;
 export default {
     abs2rel(dateStr) {
         let now = Date.now() / 1000
@@ -24,13 +26,21 @@ export default {
     numFlow(num) {
         return num > 1000 ? '999+' : num
     },
-    isLogin() {
+    async isLogin() {
         let jwt = localStorage.getItem('jwt')
-        //verify jwt
-        loginCache = Date.now()
-        return !!jwt
+        if (!jwt) return false
+        await api.auth(jwt).then(rsp => {
+            if (rsp.data['code'] === 0) {
+                loginCache = Date.now()
+                return true
+            }
+            return false
+        })
     },
     isLoginCached() {
-        return Date.now() - loginCache < 15 * 60 * 1000;
+        if (Date.now() - loginCache < 15 * 60 * 1000) {
+            return true
+        }
+        return this.isLogin()
     }
 }

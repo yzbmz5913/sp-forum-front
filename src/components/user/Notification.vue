@@ -5,7 +5,7 @@
     </div>
     <div class="right">
       <div class="abstract">
-        <a @click="c()">{{ from.name }}&nbsp;</a>
+        <a @click="c()">{{ from.username }}&nbsp;</a>
         <span v-if="type===1">关注了你</span>
         <span v-else>{{ action }}了你的帖子<a @click="$router.push('/thread/'+post.id)">&nbsp;{{ post.title }}</a></span>
       </div>
@@ -27,7 +27,7 @@ export default {
   components: {Stat, Profile},
   props: [
     'type',
-    'from', //包括{name, uid,faceUrl}
+    'from', //包括{username, uid,faceUrl}
     'post', //包括{title, id}
     'content',
     'date',

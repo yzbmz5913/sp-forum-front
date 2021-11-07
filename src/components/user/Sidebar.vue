@@ -30,11 +30,18 @@ export default {
   name: "Sidebar",
   data() {
     return {
-      authRes: true
+      authRes: false
     }
   },
   created() {
-    //auth from server
+    console.log(this.$route.params['uid'],this.$store.state.user.uid)
+    this.authRes = parseInt(this.$route.params['uid'])===this.$store.state.user.uid
+  },
+  watch:{
+    '$store.state.user'(newUser){
+      console.log(this.$route.params['uid'],newUser.uid)
+      this.authRes = this.$route.params['uid']===newUser.uid
+    }
   }
 }
 </script>

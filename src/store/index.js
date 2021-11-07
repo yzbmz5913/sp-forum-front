@@ -8,7 +8,10 @@ let id2Lis = {}
 export default new Vuex.Store({
     state: {
         shouldMask: false,
-        user: {},
+        user: {
+            desc: '',
+            faceUrl: 'https://img0.baidu.com/it/u=1051750546,2567387195&fm=26&fmt=auto'
+        },
         delConfirmResolve: null,
         delConfirm: null,
         errMessage: null,
@@ -41,10 +44,9 @@ export default new Vuex.Store({
             state.shouldMask = id
         },
         changeUserProfile(state, payload) {
-            state.user.uid = payload.uid
-            state.user.username = payload.username
-            state.user.faceUrl = payload.faceUrl
-            state.user.desc = payload.desc
+            for (let key of Object.getOwnPropertyNames(payload)) {
+                state.user[key] = payload[key]
+            }
         },
         delConfirmReset(state) {
             state.delConfirm = new Promise(resolve => {

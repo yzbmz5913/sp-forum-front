@@ -7,18 +7,19 @@
       <div class="right">
         <div style="display: flex;align-items: center;justify-content: space-between">
           <h3>{{ $store.state.user.username }}</h3>
-          <div class="edit" @click="edit()">
-            <btn text="编辑资料"></btn>
+          <div class="edit">
+            <btn v-if="parseInt($route.params['uid'])===$store.state.user.uid" text="编辑资料" @click.native="edit()"></btn>
+            <btn v-else :text="isFollow?'取消关注':'关注'" @click.native="toggleFollow()"></btn>
           </div>
         </div>
         <p>{{ $store.state.user.desc }}</p>
       </div>
     </div>
-    <div class="statistics">
-      <div><span class="k">注册时间：</span><span class="v">2021-10-21</span></div>
-      <div><span class="k">发帖数：</span><span class="v">34</span></div>
-      <div><span class="k">关注：</span><span class="v">23</span></div>
-      <div><span class="k">粉丝：</span><span class="v">15</span></div>
+    <div class="statistics" v-if="$store.state.user.uid">
+      <div><span class="k">注册时间：</span><span class="v">{{ regDate }}</span></div>
+      <div><span class="k">发帖数：</span><span class="v">{{ threadNum }}</span></div>
+      <div><span class="k">关注：</span><span class="v">{{ followingNum }}</span></div>
+      <div><span class="k">粉丝：</span><span class="v">{{ followerNum }}</span></div>
     </div>
 
     <hover-box id="hover_editor" t="200" w="500">
@@ -34,6 +35,7 @@ import Profile from "../Profile";
 import Btn from "../Btn";
 import HoverBox from "../HoverBox";
 import Editor from "./Editor";
+import api from "../../assets/js/api";
 
 export default {
   name: "UserBar",
@@ -43,11 +45,20 @@ export default {
     HoverBox,
     Editor,
   },
+  data() {
+    return {
+      isFollow: true,
+      regDate: '',
+      threadNum: 0,
+      followingNum: 0,
+      followerNum: 0,
+    }
+  },
   methods: {
     async edit() {
       this.$store.commit('mask', 'hover_editor')
       window.addEventListener('mousedown', this.$store.state.lis('hover_editor'), {capture: true})
-      if(!await this.$store.state.delConfirm)return
+      if (!await this.$store.state.delConfirm) return
       this.commitEdition()
     },
     commitEdition() {
@@ -59,23 +70,60 @@ export default {
       let changeUserProfileReq = {
         username: newUsername,
         desc: newDesc,
-        face: newFace,
+        face_url: newFace,
       }
-      if (oldPwd&&newPwd) {
-        changeUserProfileReq.newPwd = newPwd
-        changeUserProfileReq.oldPwd = oldPwd
+      if (oldPwd && newPwd) {
+        changeUserProfileReq.new_pwd = newPwd
+        changeUserProfileReq.old_pwd = oldPwd
       }
-
-      let rsp = {msg:"旧密码不正确！"} //todo call backend api，校验是否修改成功
-      if(rsp.msg){
-        this.$store.commit('errHappens',rsp.msg)
-        return
-      }
-      location.reload()
+      api.changeUserProfile(changeUserProfileReq).then(rsp => {
+        let data = rsp.data
+        if (data['code'] === 0) {
+          this.$store.commit('changeUserProfile', {
+            username: newUsername,
+            desc: newDesc,
+            faceUrl: newFace,
+          })
+          if (changeUserProfileReq.new_pwd) {
+            localStorage.removeItem('jwt')
+            this.$router.replace('/')
+          }
+          location.reload()
+        } else {
+          this.$store.commit('errHappens', data['msg'])
+        }
+      })
     },
+    toggleFollow() {
+      api.follow(this.$route.params['uid'], !this.isFollow).then(rsp => {
+        if (rsp.data.code === 0) {
+          this.isFollow = !this.isFollow
+        } else {
+          this.$store.commit('errHappens', rsp.data.msg)
+        }
+      })
+    }
   },
-  mounted() {
-  }
+  created() {
+    api.stats().then(rsp => {
+      let data = rsp.data
+      if (data.code === 0) {
+        let p = data.payload
+        this.regDate = p['reg_date']
+        this.followingNum = p['followingNum']
+        this.followerNum = p['followerNum']
+        this.threadNum = p['threadNum']
+      } else {
+        this.$store.commit('errHappens', '获取个人统计数据失败，详细原因：' + data.msg)
+      }
+    })
+    if (parseInt(this.$route.params['uid']) === this.$store.state.user.uid) return
+    api.isFollow(this.$route.params['uid']).then(rsp => {
+      if (rsp.data.code === 0) {
+        this.isFollow = rsp.data.payload
+      }
+    })
+  },
 }
 </script>
 

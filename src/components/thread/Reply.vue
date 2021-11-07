@@ -1,7 +1,7 @@
 <template>
   <div class="replies">
     <transition-group name="replies-change" tag="ul">
-      <li v-for="reply in reps" :key="reply.rid">
+      <li v-for="reply in replies" :key="reply.rid">
         <div class="left">
           <profile class="pro" size="36" :face-url="reply.owner.faceUrl"></profile>
         </div>
@@ -20,19 +20,13 @@
             <table>
               <tr>
                 <td>
-                <span @click="changeFav(reply)">
-                  <stat class="fav" :icon="reply.fav?'icon-favorites-fill':'icon-favorites'" :text="reply.favNum"
-                        fs="18"></stat>
-                </span>
-                </td>
-                <td>
                 <span @click="toggleReply(reply.owner.uid)">
                   <stat class="rsp" :icon="reply.owner.uid===replyTo?'icon-resonserate-fill':'icon-resonserate'"
                         fs="18"></stat>
                 </span>
                 </td>
                 <td>
-                <span @click="delReply(reply.rid)">
+                <span v-if="reply.owner.uid===$store.state.user.uid" @click="delReply(reply.rid)">
                   <stat class="bin" icon="icon-ashbin" fs="18" v-if="isSelf(reply.owner.uid)"></stat>
                 </span>
                 </td>
@@ -44,7 +38,6 @@
       </li>
     </transition-group>
     <div class="msg-box">
-      <!--      <textarea cols="30" rows="4" class="ta" :placeholder="ph" v-model="text"></textarea>-->
       <editor ref="ed" toolbar_el="toolbar_el" text_el="text_el" h="130" w="650" @textChange="replyTextChange"></editor>
       <span>{{ content.length }}/200</span>
       <btn text="回复" class="btn" @click.native="sendReply(content,replyTo)"></btn>
@@ -58,22 +51,23 @@ import Btn from "../Btn";
 import Profile from "../Profile";
 import utils from "../../assets/js/utils";
 import Editor from "./Editor";
+import api from "../../assets/js/api";
 
 export default {
   name: "reply",
   components: {Editor, Profile, Btn, Stat},
   props: [
-    'replies',
     'ownerUid',
     'ownerUsername',
     'lid',
   ],
   data() {
     return {
-      reps: this.replies,
+      replies: [],
       uid2name: {},
       replyTo: this.ownerUid,
       content: '',
+      triggered: false,
     }
   },
   created() {
@@ -83,16 +77,7 @@ export default {
     }
   },
   methods: {
-    changeFav(reply) {
-      if (reply.fav) {
-        reply.favNum--;
-      } else {
-        reply.favNum++;
-      }
-      reply.fav = !reply.fav
-    },
     isSelf(uid) {
-      return true
       return uid === this.$store.state.user.uid
     },
     reply(uid) {
@@ -123,25 +108,49 @@ export default {
       window.addEventListener('mousedown', this.$store.state.lis('hover_delReply'), {capture: true})
 
       if (!await this.$store.state.delConfirm) return
-      //todo call backend api
-      let l = 0, r = this.reps.length - 1
-      let res = -1
-      while (l <= r) {
-        let mid = Math.floor((l + r) / 2)
-        let cur = this.reps[mid].rid
-        if (cur === rid) {
-          res = mid
-          break
-        } else if (cur < rid) {
-          l = mid + 1
-        } else r = mid - 1
-      }
-      if (res < 0) return
-      this.reps.splice(res, 1)
-      this.$store.commit('errHappens','删除回复错误！')
+      api.delReply(rid).then(rsp=> {
+        if (rsp.data.code === 0) {
+          let l = 0, r = this.replies.length - 1
+          let res = -1
+          while (l <= r) {
+            let mid = Math.floor((l + r) / 2)
+            let cur = this.replies[mid].rid
+            if (cur === rid) {
+              res = mid
+              break
+            } else if (cur < rid) {
+              l = mid + 1
+            } else r = mid - 1
+          }
+          if (res < 0) return
+          this.replies.splice(res, 1)
+        }else{
+          this.$store.commit('errHappens', rsp.data.msg)
+        }
+      })
     },
-    sendReply(lid,content,replyTo){
-      //todo call backend api
+    sendReply(lid, content, replyTo) {
+      api.createReply(lid,content,replyTo).then(rsp=>{
+        let data=rsp.data
+        if(data.code===0){
+          let p=data.payload
+          this.replies.push({
+            rid: p.rid,
+            owner: {
+              uid: p.author.uid,
+              username: p.author.username,
+              faceUrl: p.author.face_url,
+            },
+            to: p.to.uid,
+            content: p.content,
+            date: p.date,
+            fav: p.fav,
+            favNum: 0,
+          })
+        }else{
+          this.$store.commit('errHappens',data.msg)
+        }
+      })
     }
   },
   computed: {
@@ -210,6 +219,33 @@ export default {
         })
       }
     }
+  },
+  watch: {
+    '$parent.showReplies'() {
+      if (this.triggered) return
+      this.triggered = true
+      api.getReply(this.lid).then(rsp=>{
+        let data=rsp.data
+        if(data.code===0){
+          let p=data.payload
+          for(let reply of p){
+            this.replies.push({
+              rid: reply['rid'],
+              to: reply['toAuthor']['uid'],
+              content: reply['content'],
+              date: reply['date'],
+              owner:{
+                uid: reply['author']['uid'],
+                username: reply['author']['username'],
+                faceUrl: reply['author']['face_url']
+              }
+            })
+          }
+        }else{
+          this.$store.commit('errHappens',data.msg)
+        }
+      })
+    }
   }
 }
 </script>
@@ -249,10 +285,6 @@ export default {
 
 .bottom .rsp:hover, .bottom .bin:hover {
   color: #333;
-}
-
-.bottom .fav:hover {
-  color: #DD4A68;
 }
 
 table {

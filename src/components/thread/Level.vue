@@ -29,12 +29,12 @@
             </span>
             </td>
             <td>
-            <span @click="changeCollect()">
+            <span v-if="isRoot" @click="changeCollect()">
               <stat class="collect" :icon="isCollect?'icon-collection-fill':'icon-collection'" fs="18"></stat>
             </span>
             </td>
             <td>
-            <span @click="delLevel()">
+            <span v-if="owner.uid===$store.state.user.uid" @click="delLevel()">
               <stat class="bin" icon="icon-ashbin" fs="18" v-if="isSelf"></stat>
             </span>
             </td>
@@ -42,7 +42,7 @@
         </table>
       </div>
       <transition name="show-reply-box">
-        <reply v-show="showReplies" :owner-uid="owner.uid" :owner-username="owner.username" :replies="replies" :lid="lid"></reply>
+        <reply v-show="showReplies" :owner-uid="owner.uid" :owner-username="owner.username" :lid="lid"></reply>
       </transition>
     </div>
   </div>
@@ -53,6 +53,7 @@ import Profile from "../Profile";
 import utils from "../../assets/js/utils";
 import Stat from "../Stat";
 import Reply from "./Reply";
+import api from "../../assets/js/api";
 
 export default {
   name: "level",
@@ -64,7 +65,6 @@ export default {
     'owner', //
     'content',
     'date',
-    'replies',
     'images',
     'isRoot',
     'lid',
@@ -73,7 +73,7 @@ export default {
     return {
       isFav: this.fav,
       cnt: this.favNum,
-      showReplies: true,
+      showReplies: false,
       isCollect: false,
       color: '#333',
       worker: null,
@@ -81,7 +81,6 @@ export default {
   },
   computed: {
     isSelf() {
-      return true
       return this.owner.uid === this.$store.state.user.uid;
     },
     relDate() {
@@ -90,33 +89,58 @@ export default {
   },
   methods: {
     changeFav() {
-      //call fav api
-      if (this.isFav) {
-        this.cnt--;
-      } else {
-        this.cnt++;
-      }
-      this.isFav = !this.isFav
+      api.fav(this.$parent['tid'], this.lid, !this.isFav).then(rsp => {
+        if (rsp.data.code === 0) {
+          if (this.isFav) {
+            this.cnt--;
+          } else {
+            this.cnt++;
+          }
+          this.isFav = !this.isFav
+        } else {
+          this.$store.commit('errHappens', rsp.data.msg)
+        }
+      })
     },
     toggleReply() {
       this.showReplies = !this.showReplies
     },
     changeCollect() {
-      //call collect api
-      this.isCollect = !this.isCollect
+      api.collect(this.$parent['tid'], !this.isCollect).then(rsp => {
+        if (rsp.data.code === 0) {
+          this.isCollect = !this.isCollect
+        } else {
+          this.$store.commit('errHappens', rsp.data.msg)
+        }
+      })
     },
     async delLevel() {
       this.$store.commit('mask', 'hover_delLevel')
       window.addEventListener('mousedown', this.$store.state.lis('hover_delLevel'), {capture: true})
 
       if (!await this.$store.state.delConfirm) return
-      if(this.isRoot){
-        //call delThread api
+      if (this.isRoot) {
+        api.delThread(this.$parent['tid']).then(rsp => {
+          if (rsp.data.code !== 0) {
+            this.$store.commit('errHappens', rsp.data.msg)
+          }
+        })
         await this.$router.push('/')
-      }else{
-        //call delLevel api
+      } else {
+        api.delLevel(this.lid).then(rsp => {
+          if (rsp.data.code !== 0) {
+            this.$store.commit('errHappens', rsp.data.msg)
+          }
+        })
       }
     }
+  },
+  created() {
+    api.isCollect(this.$parent['tid']).then(rsp => {
+      if (rsp.data.code === 0) {
+        this.isCollect = rsp.data.payload
+      }
+    })
   },
   mounted() {
     let canvas = document.createElement('canvas')

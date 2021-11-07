@@ -7,11 +7,10 @@
       <li v-for="l in levels">
         <level :fav="l.fav"
                :fav-num="l.favNum"
-               :reply-num="l.replies.length"
+               :reply-num="l.replyNum"
                :owner="l.owner"
                :content="l.content"
                :date="l.date"
-               :replies="l.replies"
                :images="l.images"
                :is-root="l.isRoot"
                :lid="l.lid"></level>
@@ -61,6 +60,7 @@ import Pager from "../../components/Pager";
 import HoverBox from "../../components/HoverBox";
 import SideTool from "../../components/SideTool";
 import Editor from "../../components/thread/Editor";
+import api from "../../assets/js/api";
 
 export default {
   name: "Thread",
@@ -68,7 +68,7 @@ export default {
   data() {
     return {
       title: '风暴英雄使我快乐',
-      id: 1,
+      tid: 1,
       curPage: 1,
       totalPage: 1,
       pageNums: [],
@@ -83,6 +83,7 @@ export default {
           isRoot: true,
           fav: false,
           favNum: 4231,
+          replyNum: 2,
           title: '风暴英雄使我快乐',
           date: '2021-10-24 19:27:23',
           content: '风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！',
@@ -90,55 +91,77 @@ export default {
             'https://5b0988e595225.cdn.sohucs.com/q_70,c_zoom,w_640/images/20180323/22743255f58b4c10a445365fbe73f4b3.webp',
             'https://5b0988e595225.cdn.sohucs.com/q_70,c_zoom,w_640/images/20180323/d338bd4f8fd74b34aab5d4631b097605.webp',
           ],
-          replies: [
-            {
-              rid: 1,
-              owner: {
-                uid: 3,
-                username: 'kenny mccormick',
-                faceUrl: 'https://img0.baidu.com/it/u=668882205,3932911443&fm=26&fmt=auto',
-              },
-              to: 1,
-              content: '斯坦你好！我也喜欢风暴英雄。我也喜欢风暴英雄。我也喜欢风暴英雄。我也喜欢风暴英雄。我也喜欢风暴英雄。我也喜欢风暴英雄。我也喜欢风暴英雄。我也喜欢风暴英雄。',
-              date: '2021-10-24 19:28:43',
-              fav: true,
-              favNum: 75,
-            },
-            {
-              rid: 2,
-              owner: {
-                uid: 2,
-                username: 'kyle broflovski',
-                faceUrl: 'https://img0.baidu.com/it/u=216031677,97581716&fm=15&fmt=auto',
-              },
-              to: 3,
-              content: '肯尼你好，我也喜欢斯坦。我也喜欢斯坦。我也喜欢斯坦。我也喜欢斯坦。我也喜欢斯坦。我也喜欢斯坦。',
-              date: '2021-10-24 19:29:43',
-              fav: false,
-              favNum: 5,
-            },
-          ]
         }
       ]
     }
   },
   created() {
-    //fetch total page from server
-    this.totalPage = 10
+    this.getLevel(1)
+    api.levelNum(this.$route.params['tid']).then(rsp => {
+      if (rsp.data.code === 0) {
+        this.totalPage = rsp.data.payload
+      }
+    })
     for (let i = 0; i < Math.min(5, this.totalPage); i++) {
       this.pageNums.push(i + 1)
     }
   },
   methods: {
+    getLevel(page) {
+      console.log('getLevel', page)
+      api.getThread(this.$route.params['tid'], page).then(rsp => {
+        let data = rsp.data
+        if (data.code === 0) {
+          let p = data.payload
+          this.tid = p['tid']
+          this.title = p['title']
+          for (let level of p['levels']) {
+            this.levels.push({
+              isRoot: level['is_root'],
+              fav: false,
+              favNum: level['fav'],
+              replyNum: level['reply_num'],
+              date: level['date'],
+              content: level['content'],
+              lid: level['lid'],
+              owner: {
+                uid: level['author']['uid'],
+                username: level['author']['username'],
+                faceUrl: level['author']['face_url']
+              }
+            })
+            api.isFav(level['lid']).then(rsp => {
+              if (rsp.data.code === 0) {
+                this.levels[this.levels.length - 1].fav = rsp.data.payload
+              }
+            })
+          }
+        } else {
+          this.$store.commit('errHappens', data.msg)
+        }
+      })
+    },
     async createLevel() {
       this.$store.commit('mask', 'hover_levelCreator')
       window.addEventListener('mousedown', this.$store.state.lis('hover_levelCreator'), {capture: true})
-      if(!await this.$store.state.delConfirm){
+      if (!await this.$store.state.delConfirm) {
         return
       }
-      let html = this.$refs.editor.editor.txt.html();
+      let html = this.$refs.editor.editor.txt.html()
       let content = html.substring(3, html.length - 4)
-      // todo call create level API
+
+      api.createLevel(this.tid, content).then(async rsp => {
+        let data = rsp.data
+        if (data.code === 0) {
+          let rsp = await api.levelNum(this.$route.params['tid'])
+          if (rsp.data.code === 0) {
+            let lastPage = rsp.data.payload
+            this.getLevel(lastPage)
+          }
+        } else {
+          this.$store.commit('errHappens', data.msg)
+        }
+      })
     },
     top() {
       window.scrollTo({
@@ -162,7 +185,7 @@ export default {
         newPages.unshift(newPages[0] - 1)
       }
       this.pageNums = newPages
-      //todo fetch new page from server
+      this.getLevel(newPages)
     }
   }
 }

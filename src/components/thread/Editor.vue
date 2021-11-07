@@ -36,6 +36,7 @@ export default {
           'image',
         ]
         this.editor.config.uploadImgServer = 'http://localhost:8080/uploadImg'
+        this.editor.config.uploadFileName = 'myFile'
       } else if (this.toolbar_el && this.text_el) {
         this.editor = new E('#' + this.toolbar_el, '#' + this.text_el);
         this.editor.config.menus = [

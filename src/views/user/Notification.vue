@@ -22,7 +22,7 @@ export default {
         {
           type: 2,
           from: {
-            name: 'kyle',
+            username: 'kyle',
             uid: 2,
             faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
           },
@@ -32,7 +32,7 @@ export default {
         {
           type: 1,
           from: {
-            name: 'kyle',
+            username: 'kyle',
             uid: 2,
             faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
           },
@@ -41,7 +41,7 @@ export default {
         {
           type: 3,
           from: {
-            name: 'kenny',
+            username: 'kenny',
             uid: 3,
             faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
           },
@@ -51,7 +51,7 @@ export default {
         }, {
           type: 2,
           from: {
-            name: 'kyle',
+            username: 'kyle',
             uid: 2,
             faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
           },
@@ -61,7 +61,7 @@ export default {
         {
           type: 1,
           from: {
-            name: 'kyle',
+            username: 'kyle',
             id: 2,
             faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
           },
@@ -70,7 +70,7 @@ export default {
         {
           type: 3,
           from: {
-            name: 'kenny',
+            username: 'kenny',
             id: 3,
             faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
           },
@@ -80,7 +80,7 @@ export default {
         }, {
           type: 2,
           from: {
-            name: 'kyle',
+            username: 'kyle',
             id: 2,
             faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
           },
@@ -90,7 +90,7 @@ export default {
         {
           type: 1,
           from: {
-            name: 'kyle',
+            username: 'kyle',
             id: 2,
             faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
           },
@@ -99,7 +99,7 @@ export default {
         {
           type: 3,
           from: {
-            name: 'kenny',
+            username: 'kenny',
             id: 3,
             faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
           },

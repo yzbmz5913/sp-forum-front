@@ -1,68 +1,94 @@
 import axios from "axios";
+import qs from 'qs';
 
-axios.defaults.baseURL = 'http://localhost:8080'
-axios.interceptors.request.use(config=>{
-    if(localStorage.getItem('jwt')){
-        config.headers['Authorization'] = 'Bearer '+ localStorage.getItem('jwt')
+axios.defaults.baseURL = 'http://localhost:8999'
+axios.interceptors.request.use(config => {
+    if (localStorage.getItem('jwt')) {
+        config.headers['Authorization'] = localStorage.getItem('jwt')
     }
+    return config
+})
+axios.interceptors.response.use(rsp => {
+    let auth = rsp.headers['authorization'];
+    if (auth) localStorage.setItem('jwt', auth)
+    return rsp
 })
 
 export default {
-    getHotPosts(){
+    auth() {
+        return axios.get('/auth',{
+            headers:{
+                'Authorization': localStorage.getItem('jwt')
+            }
+        })
+    },
+    getHotPosts() {
         return axios.get('/home/getHotPosts')
     },
-    getCarousel(){
+    getCarousel() {
         return axios.get('/home/getCarousel')
     },
-    login(username,password){
-        return axios.post('/user/login',{username,password})
+    login(username, password) {
+        return axios.post('/user/login', qs.stringify({username, password}))
     },
-    register(username,password){
-        return axios.post('/user/register',{username,password})
+    register(username, password, password2) {
+        return axios.post('/user/register', qs.stringify({username, password, password2}))
     },
-    getPosts(pageNum,size){
-        return axios.get('/home/getPosts',{
-            params:{
-                pageNum,size
-            }
-        })
+    follow(target,positive){
+        return axios.post('/user/follow', qs.stringify({target,positive}))
     },
-    getLevels(threadId){
-        return axios.get('/thread/getLevels',{
-            params:{
-                threadId
-            }
-        })
+    isFollow(target){
+        return axios.get('/user/isFollow', {params:{target}})
     },
-    createLevel(threadId,content){
-        return axios.post('/thread/createLevel',{threadId,content})
+    changeUserProfile(changeUserProfileReq) {
+        return axios.post('/user/changeProfile', qs.stringify(changeUserProfileReq))
     },
-    createThread(content){
-        return axios.post('/thread/createThread',{content})
+    stats(){
+        return axios.get('/user/stats')
     },
-    reply(lid,content,replyTo){
-        return axios.post('/thread/reply',{lid,content,replyTo})
+    getPosts(pageNum, size) {
+        return axios.get('/home/getPosts', {params: {pageNum, size}})
     },
-    delReply(rid){
-        return axios.post('/thread/delReply',{rid})
+    getThread(tid,page) {
+        return axios.get('/thread/getThread', {params: {tid,page}})
     },
-    delLevel(lid){
-        return axios.post('/thread/delLevel',{lid})
+    levelNum(tid){
+        return axios.get('/thread/levelNum', {params: {tid}})
     },
-    delThread(id){
-        return axios.post('/thread/delThread',{id})
+    getReply(lid){
+        return axios.get('/thread/getReply', {params: {lid}})
     },
-    fav(type,id){ //type=0 thread type=1 reply
-        return axios.post('/thread/fav',{type,id})
+    createLevel(tid, content) {
+        return axios.post('/thread/createLevel', qs.stringify({tid, content}))
     },
-    collect(lid){
-        return axios.post('/thread/collect',{lid})
+    createThread(title,content) {
+        return axios.post('/thread/createThread', qs.stringify({title,content}))
     },
-    changeUserProfile(changeUserProfileReq){
-        return axios.post('/user/changeProfile',{profile: changeUserProfileReq})
+    createReply(lid, content, to) {
+        return axios.post('/thread/createReply', qs.stringify({lid, content, to}))
     },
-    /*
-    /uploadImg
-     */
-
+    delReply(rid) {
+        return axios.post('/thread/delReply', qs.stringify({rid}))
+    },
+    delLevel(lid) {
+        return axios.post('/thread/delLevel', qs.stringify({lid}))
+    },
+    delThread(tid) {
+        return axios.post('/thread/delThread', qs.stringify({tid}))
+    },
+    isFav(lid) {
+        return axios.get('/thread/fav', {params:{lid}})
+    },
+    fav(tid,lid,positive) {
+        return axios.post('/thread/fav', qs.stringify({tid,lid,positive}))
+    },
+    favNum(lid) {
+        return axios.get('/thread/fav', {params:{lid}})
+    },
+    isCollect(tid) {
+        return axios.get('/thread/isCollect', {params:{tid}})
+    },
+    collect(tid,positive) {
+        return axios.post('/thread/collect', qs.stringify({tid,positive}))
+    },
 }

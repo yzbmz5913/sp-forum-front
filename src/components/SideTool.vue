@@ -14,9 +14,6 @@
 export default {
   name: "SideTool",
   props: ['count',],
-  mounted() {
-    console.log(this.$slots)
-  }
 }
 </script>
 

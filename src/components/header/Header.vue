@@ -37,18 +37,17 @@ export default {
   },
   methods: {
     getFaceUrl() {
-      return utils.isLogin() ? this.$store.state.user.faceUrl :
-          'https://img0.baidu.com/it/u=1051750546,2567387195&fm=26&fmt=auto'
+      return this.$store.state.user.faceUrl
     },
     c() {
-      if (utils.isLogin()) {
-        this.$router.push(`/user/${this.$store.state.user.uid}/notification`).catch(err => err)
-      } else {
+      if (!this.$store.state.user.uid) {
         this.$router.push('/l/login')
+      } else {
+        this.$router.push(`/user/${this.$store.state.user.uid}/notification`).catch(err => err)
       }
     },
     showUH() {
-      if (!utils.isLogin()) return
+      if (!this.$store.state.user.uid) return
       this.$refs.uh.w = 72
       this.$refs.uh.c = 'rgba(188,188,188,1)'
     },
