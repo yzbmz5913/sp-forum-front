@@ -11,6 +11,7 @@
 
 <script>
 import UserCard from "../../components/user/UserCard";
+import api from "../../assets/js/api";
 
 export default {
   name: "Follower",
@@ -25,40 +26,49 @@ export default {
   watch: {
     '$route': {
       handler(to, from) {
+        this.users = []
         if (to.fullPath.includes('follower')) {
-          this.users = [
-            {
-              uid: 2,
-              username: 'kyle broflovski',
-              faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg',
-              desc: '我是凯子follower',
-              isFollow: false,
-            },
-            {
-              uid: 3,
-              username: 'kenny mccormick',
-              faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg',
-              desc: '我是肯尼follower',
-              isFollow: true,
-            },
-          ]
+          api.follower().then(async rsp => {
+            let data = rsp.data
+            if (data.code === 0) {
+              let p = data.payload
+              for (let u of p) {
+                let isFollow = false
+                await api.isFollow(u['uid']).then(rsp => {
+                  if (rsp.data.code === 0) {
+                    isFollow = rsp.data.payload
+                  }
+                })
+                this.users.push({
+                  uid: u['uid'],
+                  username: u['username'],
+                  faceUrl: u['face_url'],
+                  desc: u['desc'],
+                  isFollow: isFollow,
+                })
+              }
+            } else {
+              this.$store.commit('errHappens', '关注列表获取失败，详细原因：' + data.msg)
+            }
+          })
         } else {
-          this.users = [
-            {
-              uid: 4,
-              username: 'eric cartman',
-              faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg',
-              desc: '我是卡胖following',
-              isFollow: true,
-            },
-            {
-              uid: 5,
-              username: 'butters stotch',
-              faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg',
-              desc: '我是黄油following',
-              isFollow: true,
-            },
-          ]
+          api.following().then(rsp => {
+            let data = rsp.data
+            if (data.code === 0) {
+              let p = data.payload
+              for (let u of p) {
+                this.users.push({
+                  uid: u['uid'],
+                  username: u['username'],
+                  faceUrl: u['face_url'],
+                  desc: u['desc'],
+                  isFollow: true,
+                })
+              }
+            } else {
+              this.$store.commit('errHappens', '粉丝列表获取失败，详细原因：' + data.msg)
+            }
+          })
         }
       },
       immediate: true

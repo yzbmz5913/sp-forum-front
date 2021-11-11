@@ -5,18 +5,20 @@
     </div>
     <div id="hot" class="card">
       <p>热门帖子</p>
-      <ul>
+      <ul v-if="hotPosts.length>0">
         <li v-for="post in hotPosts" class="hot-post">
           <p class="post-date">{{ post.date }}</p>
           <a @click="c(post.id)">{{ post.title }}</a>
         </li>
       </ul>
+      <div class="none" v-else>还没有热门帖子...</div>
     </div>
   </div>
 </template>
 
 <script>
 import Carousel from "./Carousel";
+import api from "../assets/js/api";
 
 export default {
   name: "Recommend",
@@ -25,34 +27,7 @@ export default {
   },
   data() {
     return {
-      hotPosts: [
-        {
-          date: '2021-10-20',
-          title: '南方公园主题站上线啦',
-          id: 1,
-        },
-        {
-          date: '2021-10-19',
-          title: '坦子生日快乐',
-          id: 2,
-        },
-        {
-          date: '2021-10-21',
-          title: '我是一事无成铁哈批，求喷'
-        },
-        {
-          date: '2021-10-20',
-          title: '南方公园主题站上线啦'
-        },
-        {
-          date: '2021-10-19',
-          title: '坦子生日快乐'
-        },
-        {
-          date: '2021-10-21',
-          title: '我是一事无成铁哈批，求喷'
-        }
-      ]
+      hotPosts: []
     }
   },
   methods:{
@@ -61,7 +36,21 @@ export default {
     }
   },
   created() {
-
+    api.getHotPosts().then(rsp=>{
+      let data=rsp.data
+      if(data.code===0){
+        let p=data.payload
+        for(let h of p){
+          this.hotPosts.push({
+            date: h['date'],
+            title: h['title'],
+            id: h['tid'],
+          })
+        }
+      }else{
+        this.$store.commit('errHappens',"获取热门帖子失败，详细原因："+data.msg)
+      }
+    })
   }
 }
 </script>
@@ -94,6 +83,15 @@ export default {
 
 #hot p {
   font-weight: 600;
+}
+
+#hot .none{
+  font-size: 16px;
+  font-weight: 600;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  line-height: 360px;
 }
 
 #hot .post-date {

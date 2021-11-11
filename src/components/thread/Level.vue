@@ -19,7 +19,7 @@
           <tr>
             <td>
             <span @click="changeFav()">
-              <stat class="fav" :icon="isFav?'icon-favorites-fill':'icon-favorites'" :text="cnt" fs="18"></stat>
+              <stat class="fav" :icon="isFav?'icon-favorites-fill':'icon-favorites'" :text="favNum" fs="18"></stat>
             </span>
             </td>
             <td>
@@ -59,8 +59,6 @@ export default {
   name: "level",
   components: {Reply, Stat, Profile},
   props: [
-    'fav',
-    'favNum',
     'replyNum',
     'owner', //
     'content',
@@ -71,8 +69,8 @@ export default {
   ],
   data() {
     return {
-      isFav: this.fav,
-      cnt: this.favNum,
+      isFav: false,
+      favNum: 0,
       showReplies: false,
       isCollect: false,
       color: '#333',
@@ -92,9 +90,9 @@ export default {
       api.fav(this.$parent['tid'], this.lid, !this.isFav).then(rsp => {
         if (rsp.data.code === 0) {
           if (this.isFav) {
-            this.cnt--;
+            this.favNum--;
           } else {
-            this.cnt++;
+            this.favNum++;
           }
           this.isFav = !this.isFav
         } else {
@@ -136,6 +134,16 @@ export default {
     }
   },
   created() {
+    api.favNum(this.lid).then(rsp => {
+      if (rsp.data.code === 0) {
+        this.favNum = rsp.data.payload
+      }
+    })
+    api.isFav(this.lid).then(rsp=>{
+      if (rsp.data.code === 0) {
+        this.isFav = rsp.data.payload
+      }
+    })
     api.isCollect(this.$parent['tid']).then(rsp => {
       if (rsp.data.code === 0) {
         this.isCollect = rsp.data.payload

@@ -32,6 +32,7 @@ import Posts from "../components/Posts";
 import SideTool from "../components/SideTool";
 import HoverBox from "../components/HoverBox";
 import Editor from "../components/thread/Editor";
+import api from "../assets/js/api";
 
 export default {
   name: 'Home',
@@ -42,17 +43,24 @@ export default {
     HoverBox,
     Editor,
   },
-  methods:{
+  methods: {
     async createThread() {
       this.$store.commit('mask', 'hover_threadCreator')
       window.addEventListener('mousedown', this.$store.state.lis('hover_threadCreator'), {capture: true})
-      if(!await this.$store.state.delConfirm){
+      if (!await this.$store.state.delConfirm) {
         return
       }
       let title = document.querySelector('#hover_threadCreator #te input[type=text]').value
       let html = this.$refs.editor.editor.txt.html();
       let content = html.substring(3, html.length - 4)
-      // todo call post thread API
+      api.createThread(title, content).then(rsp => {
+        let data = rsp.data
+        if (data.code === 0) {
+          this.$router.push('/thread/' + data.payload['tid'])
+        } else {
+          this.$store.commit('errHappens', "帖子创建失败，详细原因：" + data.msg)
+        }
+      })
     },
     top() {
       window.scrollTo({
@@ -70,6 +78,7 @@ export default {
   right: calc(15% - 45px);
   bottom: 20%;
 }
+
 #hover_threadCreator {
   color: #444;
 }

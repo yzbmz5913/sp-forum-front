@@ -110,9 +110,9 @@ export default {
       if (data.code === 0) {
         let p = data.payload
         this.regDate = p['reg_date']
-        this.followingNum = p['followingNum']
-        this.followerNum = p['followerNum']
-        this.threadNum = p['threadNum']
+        this.followingNum = p['following_num']
+        this.followerNum = p['follower_num']
+        this.threadNum = p['thread_num']
       } else {
         this.$store.commit('errHappens', '获取个人统计数据失败，详细原因：' + data.msg)
       }

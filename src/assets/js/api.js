@@ -16,17 +16,20 @@ axios.interceptors.response.use(rsp => {
 
 export default {
     auth() {
-        return axios.get('/auth',{
-            headers:{
+        return axios.get('/auth', {
+            headers: {
                 'Authorization': localStorage.getItem('jwt')
             }
         })
     },
     getHotPosts() {
-        return axios.get('/home/getHotPosts')
+        return axios.get('/home/hots')
     },
     getCarousel() {
-        return axios.get('/home/getCarousel')
+        return axios.get('/home/carousel')
+    },
+    getPosts(page) {
+        return axios.get('/home/posts', {params: {page}})
     },
     login(username, password) {
         return axios.post('/user/login', qs.stringify({username, password}))
@@ -34,35 +37,47 @@ export default {
     register(username, password, password2) {
         return axios.post('/user/register', qs.stringify({username, password, password2}))
     },
-    follow(target,positive){
-        return axios.post('/user/follow', qs.stringify({target,positive}))
+    follow(target, positive) {
+        return axios.post('/user/follow', qs.stringify({target, positive}))
     },
-    isFollow(target){
-        return axios.get('/user/isFollow', {params:{target}})
+    isFollow(target) {
+        return axios.get('/user/isFollow', {params: {target}})
     },
     changeUserProfile(changeUserProfileReq) {
         return axios.post('/user/changeProfile', qs.stringify(changeUserProfileReq))
     },
-    stats(){
+    history(){
+        return axios.get('/user/history')
+    },
+    posts(){
+        return axios.get('/user/posts')
+    },
+    following(){
+        return axios.get('/user/following')
+    },
+    follower(){
+        return axios.get('/user/follower')
+    },
+    collection(){
+        return axios.get('/user/collection')
+    },
+    stats() {
         return axios.get('/user/stats')
     },
-    getPosts(pageNum, size) {
-        return axios.get('/home/getPosts', {params: {pageNum, size}})
+    getThread(tid, page) {
+        return axios.get('/thread/getThread', {params: {tid, page}})
     },
-    getThread(tid,page) {
-        return axios.get('/thread/getThread', {params: {tid,page}})
-    },
-    levelNum(tid){
+    levelNum(tid) {
         return axios.get('/thread/levelNum', {params: {tid}})
     },
-    getReply(lid){
+    getReply(lid) {
         return axios.get('/thread/getReply', {params: {lid}})
     },
     createLevel(tid, content) {
         return axios.post('/thread/createLevel', qs.stringify({tid, content}))
     },
-    createThread(title,content) {
-        return axios.post('/thread/createThread', qs.stringify({title,content}))
+    createThread(title, content) {
+        return axios.post('/thread/createThread', qs.stringify({title, content}))
     },
     createReply(lid, content, to) {
         return axios.post('/thread/createReply', qs.stringify({lid, content, to}))
@@ -77,18 +92,21 @@ export default {
         return axios.post('/thread/delThread', qs.stringify({tid}))
     },
     isFav(lid) {
-        return axios.get('/thread/fav', {params:{lid}})
+        return axios.get('/thread/isFav', {params: {lid}})
     },
-    fav(tid,lid,positive) {
-        return axios.post('/thread/fav', qs.stringify({tid,lid,positive}))
+    fav(tid, lid, positive) {
+        return axios.post('/thread/fav', qs.stringify({tid, lid, positive}))
     },
     favNum(lid) {
-        return axios.get('/thread/fav', {params:{lid}})
+        return axios.get('/thread/favNum', {params: {lid}})
     },
     isCollect(tid) {
-        return axios.get('/thread/isCollect', {params:{tid}})
+        return axios.get('/thread/isCollect', {params: {tid}})
     },
-    collect(tid,positive) {
-        return axios.post('/thread/collect', qs.stringify({tid,positive}))
+    collect(tid, positive) {
+        return axios.post('/thread/collect', qs.stringify({tid, positive}))
     },
+    visit(tid) {
+        return axios.post('/thread/visit', qs.stringify({tid}))
+    }
 }

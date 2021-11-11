@@ -6,7 +6,7 @@
         <p class="abstract ellipsis" :style="{width: (leftW?leftW:'550')+'px'}">{{ abstract }}</p>
       </div>
       <div class="img-box">
-        <img v-for="img in images" :src="img.path" alt="">
+        <img v-for="img in images" :src="img" alt="">
       </div>
     </div>
     <div class="right">
@@ -16,7 +16,7 @@
       </div>
       <stat class="reply" icon="icon-resonserate" :text="reply"></stat>
       <stat class="visit" icon="icon-browse" :text="visit"></stat>
-      <stat class="date" icon="icon-calendar" :text="date"></stat>
+      <stat class="date" icon="icon-calendar" :text="relDate"></stat>
     </div>
   </div>
 </template>
@@ -24,6 +24,8 @@
 <script>
 import Profile from "./Profile";
 import Stat from "./Stat";
+import utils from "../assets/js/utils";
+
 export default {
   name: "Post",
   components: {
@@ -37,7 +39,11 @@ export default {
     },
     p() {
       this.$router.push(`/thread/${this.id}`)
-      console.log(this.$router);
+    }
+  },
+  computed: {
+    relDate(){
+      return utils.abs2rel(this.date)
     }
   }
 }
@@ -78,6 +84,11 @@ export default {
 
 .left .img-box {
   margin: 10px 0;
+}
+
+.left .img-box img {
+  max-width: 100px;
+  max-height: 100px;
 }
 
 .right {

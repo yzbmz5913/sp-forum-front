@@ -16,6 +16,7 @@
 <script>
 import Profile from "../Profile";
 import Btn from "../Btn";
+import api from "../../assets/js/api";
 
 export default {
   name: "UserCard",
@@ -34,8 +35,13 @@ export default {
       this.$router.push(`/user/${this.uid}/posts`)
     },
     changeFollow() {
-      //fetch follow status from server
-      this.fo = !this.fo
+      api.follow(this.uid, !this.isFollow).then(rsp => {
+        if (rsp.data.code === 0) {
+          this.fo = !this.fo
+        } else {
+          this.$store.commit('errHappens', rsp.data.msg)
+        }
+      })
     }
   }
 }

@@ -5,9 +5,7 @@
     </div>
     <ul>
       <li v-for="l in levels">
-        <level :fav="l.fav"
-               :fav-num="l.favNum"
-               :reply-num="l.replyNum"
+        <level :reply-num="l.replyNum"
                :owner="l.owner"
                :content="l.content"
                :date="l.date"
@@ -72,27 +70,7 @@ export default {
       curPage: 1,
       totalPage: 1,
       pageNums: [],
-      levels: [
-        {
-          lid: 1,
-          owner: {
-            uid: 1,
-            username: 'stan marsh',
-            faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg',
-          },
-          isRoot: true,
-          fav: false,
-          favNum: 4231,
-          replyNum: 2,
-          title: '风暴英雄使我快乐',
-          date: '2021-10-24 19:27:23',
-          content: '风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！风暴英雄真好玩，又拿MVP了！',
-          images: [
-            'https://5b0988e595225.cdn.sohucs.com/q_70,c_zoom,w_640/images/20180323/22743255f58b4c10a445365fbe73f4b3.webp',
-            'https://5b0988e595225.cdn.sohucs.com/q_70,c_zoom,w_640/images/20180323/d338bd4f8fd74b34aab5d4631b097605.webp',
-          ],
-        }
-      ]
+      levels: []
     }
   },
   created() {
@@ -105,6 +83,7 @@ export default {
     for (let i = 0; i < Math.min(5, this.totalPage); i++) {
       this.pageNums.push(i + 1)
     }
+    api.visit(this.$route.params['tid'])
   },
   methods: {
     getLevel(page) {
@@ -118,8 +97,6 @@ export default {
           for (let level of p['levels']) {
             this.levels.push({
               isRoot: level['is_root'],
-              fav: false,
-              favNum: level['fav'],
               replyNum: level['reply_num'],
               date: level['date'],
               content: level['content'],
@@ -128,11 +105,6 @@ export default {
                 uid: level['author']['uid'],
                 username: level['author']['username'],
                 faceUrl: level['author']['face_url']
-              }
-            })
-            api.isFav(level['lid']).then(rsp => {
-              if (rsp.data.code === 0) {
-                this.levels[this.levels.length - 1].fav = rsp.data.payload
               }
             })
           }
