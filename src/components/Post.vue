@@ -42,7 +42,7 @@ export default {
     }
   },
   computed: {
-    relDate(){
+    relDate() {
       return utils.abs2rel(this.date)
     }
   }

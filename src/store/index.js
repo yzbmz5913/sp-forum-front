@@ -16,6 +16,7 @@ export default new Vuex.Store({
         delConfirm: null,
         errMessage: null,
         errTimer: null,
+        searching: false,
         lis: function (id) {
             if (id2Lis[id]) return id2Lis[id]
             this.delConfirm = new Promise(resolve => {
@@ -56,12 +57,15 @@ export default new Vuex.Store({
         delConfirmCommit(state, confirm) {
             state.delConfirmResolve(confirm)
         },
-        errHappens(state,errMsg){
+        errHappens(state, errMsg) {
             state.errMessage = errMsg
             clearTimeout(state.errTimer)
-            state.errTimer = setTimeout(()=>{
+            state.errTimer = setTimeout(() => {
                 state.errMessage = null
-            },4000)
+            }, 4000)
+        },
+        toggleSearching(state) {
+            state.searching = !state.searching
         }
     },
     actions: {},

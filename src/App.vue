@@ -13,7 +13,6 @@
 <script>
 import Header from "./components/header/Header";
 import Sprite from "./components/Sprite";
-import axios from "axios";
 import api from "./assets/js/api";
 
 let gapX, gapY

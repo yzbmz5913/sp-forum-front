@@ -30,25 +30,25 @@ export default {
       hotPosts: []
     }
   },
-  methods:{
-    c(id){
-      this.$router.push('/thread/'+id)
+  methods: {
+    c(id) {
+      this.$router.push('/thread/' + id)
     }
   },
   created() {
-    api.getHotPosts().then(rsp=>{
-      let data=rsp.data
-      if(data.code===0){
-        let p=data.payload
-        for(let h of p){
+    api.getHotPosts().then(rsp => {
+      let data = rsp.data
+      if (data.code === 0) {
+        let p = data.payload
+        for (let h of p) {
           this.hotPosts.push({
             date: h['date'],
             title: h['title'],
             id: h['tid'],
           })
         }
-      }else{
-        this.$store.commit('errHappens',"获取热门帖子失败，详细原因："+data.msg)
+      } else {
+        this.$store.commit('errHappens', "获取热门帖子失败，详细原因：" + data.msg)
       }
     })
   }
@@ -85,7 +85,7 @@ export default {
   font-weight: 600;
 }
 
-#hot .none{
+#hot .none {
   font-size: 16px;
   font-weight: 600;
   height: 100%;

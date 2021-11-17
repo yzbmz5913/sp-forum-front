@@ -121,8 +121,10 @@ export default {
                   })
                 }
                 this.page++
-                this.isLoading = false
+              } else {
+                this.$store.commit('errHappens', data.msg)
               }
+              this.isLoading = false
             })
           }
           timer = null

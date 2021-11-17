@@ -139,7 +139,7 @@ export default {
         this.favNum = rsp.data.payload
       }
     })
-    api.isFav(this.lid).then(rsp=>{
+    api.isFav(this.lid).then(rsp => {
       if (rsp.data.code === 0) {
         this.isFav = rsp.data.payload
       }

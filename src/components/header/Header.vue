@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import utils from "../../assets/js/utils";
 import Search from "./Search";
 import Profile from "../Profile";
 import UserHover from "./UserHover";

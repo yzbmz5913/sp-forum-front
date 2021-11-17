@@ -31,6 +31,9 @@ export default {
     getPosts(page) {
         return axios.get('/home/posts', {params: {page}})
     },
+    search(keyword, page) {
+        return axios.get('/home/search', {params: {keyword, page}})
+    },
     login(username, password) {
         return axios.post('/user/login', qs.stringify({username, password}))
     },
@@ -46,23 +49,26 @@ export default {
     changeUserProfile(changeUserProfileReq) {
         return axios.post('/user/changeProfile', qs.stringify(changeUserProfileReq))
     },
-    history(){
+    history() {
         return axios.get('/user/history')
     },
-    posts(){
+    posts() {
         return axios.get('/user/posts')
     },
-    following(){
+    following() {
         return axios.get('/user/following')
     },
-    follower(){
+    follower() {
         return axios.get('/user/follower')
     },
-    collection(){
+    collection() {
         return axios.get('/user/collection')
     },
     stats() {
         return axios.get('/user/stats')
+    },
+    notifications() {
+        return axios.get('/user/notifications')
     },
     getThread(tid, page) {
         return axios.get('/thread/getThread', {params: {tid, page}})

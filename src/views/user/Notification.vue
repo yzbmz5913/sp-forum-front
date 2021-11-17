@@ -10,6 +10,7 @@
 
 <script>
 import nt from "../../components/user/Notification";
+import api from "../../assets/js/api";
 
 export default {
   name: "Notification",
@@ -18,97 +19,34 @@ export default {
   },
   data() {
     return {
-      notices: [
-        {
-          type: 2,
-          from: {
-            username: 'kyle',
-            uid: 2,
-            faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
-          },
-          post: {title: '风暴英雄使我快乐', id: 1},
-          date: '2021-10-22 01:34:56'
-        },
-        {
-          type: 1,
-          from: {
-            username: 'kyle',
-            uid: 2,
-            faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
-          },
-          date: '2021-10-22 01:22:56',
-        },
-        {
-          type: 3,
-          from: {
-            username: 'kenny',
-            uid: 3,
-            faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
-          },
-          post: {title: '风暴英雄使我快乐', id: 1},
-          content: '我也喜欢风暴',
-          date: '2021-10-22 01:00:56'
-        }, {
-          type: 2,
-          from: {
-            username: 'kyle',
-            uid: 2,
-            faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
-          },
-          post: {title: '风暴英雄使我快乐', id: 1},
-          date: '2021-10-22 01:34:56'
-        },
-        {
-          type: 1,
-          from: {
-            username: 'kyle',
-            id: 2,
-            faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
-          },
-          date: '2021-10-22 01:22:56',
-        },
-        {
-          type: 3,
-          from: {
-            username: 'kenny',
-            id: 3,
-            faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
-          },
-          post: {title: '风暴英雄使我快乐', id: 1},
-          content: '我也喜欢风暴',
-          date: '2021-10-22 01:00:56'
-        }, {
-          type: 2,
-          from: {
-            username: 'kyle',
-            id: 2,
-            faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
-          },
-          post: {title: '风暴英雄使我快乐', id: 1},
-          date: '2021-10-22 01:34:56'
-        },
-        {
-          type: 1,
-          from: {
-            username: 'kyle',
-            id: 2,
-            faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
-          },
-          date: '2021-10-22 01:22:56',
-        },
-        {
-          type: 3,
-          from: {
-            username: 'kenny',
-            id: 3,
-            faceUrl: 'https://pbs.twimg.com/profile_images/1440447840925282307/JyEMm4MJ_400x400.jpg'
-          },
-          post: {title: '风暴英雄使我快乐', id: 1},
-          content: '我也喜欢风暴',
-          date: '2021-10-22 01:00:56'
-        },
-      ]
+      notices: []
     }
+  },
+  created() {
+    api.notifications().then(rsp => {
+      let data = rsp.data
+      if (data.code === 0) {
+        let p = data.payload
+        for (let nt of p) {
+          this.notices.push({
+            type: nt['type'],
+            date: nt['date'],
+            from: {
+              uid: nt['from']['uid'],
+              username: nt['from']['username'],
+              faceUrl: nt['from']['face_url']
+            },
+            content: nt['content'],
+            post: {
+              title: nt['title'],
+              tid: nt['tid']
+            }
+          })
+        }
+      } else {
+        this.$store.commit('errHappens', data.msg)
+      }
+    })
   }
 }
 </script>

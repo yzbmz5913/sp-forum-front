@@ -108,7 +108,7 @@ export default {
       window.addEventListener('mousedown', this.$store.state.lis('hover_delReply'), {capture: true})
 
       if (!await this.$store.state.delConfirm) return
-      api.delReply(rid).then(rsp=> {
+      api.delReply(rid).then(rsp => {
         if (rsp.data.code === 0) {
           let l = 0, r = this.replies.length - 1
           let res = -1
@@ -124,16 +124,16 @@ export default {
           }
           if (res < 0) return
           this.replies.splice(res, 1)
-        }else{
+        } else {
           this.$store.commit('errHappens', rsp.data.msg)
         }
       })
     },
     sendReply(lid, content, replyTo) {
-      api.createReply(lid,content,replyTo).then(rsp=>{
-        let data=rsp.data
-        if(data.code===0){
-          let p=data.payload
+      api.createReply(lid, content, replyTo).then(rsp => {
+        let data = rsp.data
+        if (data.code === 0) {
+          let p = data.payload
           this.replies.push({
             rid: p.rid,
             owner: {
@@ -147,8 +147,8 @@ export default {
             fav: p.fav,
             favNum: 0,
           })
-        }else{
-          this.$store.commit('errHappens',data.msg)
+        } else {
+          this.$store.commit('errHappens', data.msg)
         }
       })
     }
@@ -224,25 +224,25 @@ export default {
     '$parent.showReplies'() {
       if (this.triggered) return
       this.triggered = true
-      api.getReply(this.lid).then(rsp=>{
-        let data=rsp.data
-        if(data.code===0){
-          let p=data.payload
-          for(let reply of p){
+      api.getReply(this.lid).then(rsp => {
+        let data = rsp.data
+        if (data.code === 0) {
+          let p = data.payload
+          for (let reply of p) {
             this.replies.push({
               rid: reply['rid'],
               to: reply['toAuthor']['uid'],
               content: reply['content'],
               date: reply['date'],
-              owner:{
+              owner: {
                 uid: reply['author']['uid'],
                 username: reply['author']['username'],
                 faceUrl: reply['author']['face_url']
               }
             })
           }
-        }else{
-          this.$store.commit('errHappens',data.msg)
+        } else {
+          this.$store.commit('errHappens', data.msg)
         }
       })
     }

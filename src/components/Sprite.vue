@@ -26,7 +26,8 @@
           <path fill="rgb(160,94,82)" d="M254,310 a220,220 0 0,1 45,116 l-36,5 a300,300 0 0,1 -36,-116"></path>
           <path stroke="rgb(52,34,37)" d="M260,431 a300,300 0 0,0 -10,-52" v-show="!isAni"/>
           <circle r="25" fill="rgb(215,33,64)" cx="278" cy="424"></circle>
-          <circle r="11" :transform="`rotate(${isAni?'-90':'0'} 278,424)`" fill="rgb(215,33,64)" cx="260" cy="417" stroke="rgb(132,32,51)"
+          <circle r="11" :transform="`rotate(${isAni?'-90':'0'} 278,424)`" fill="rgb(215,33,64)" cx="260" cy="417"
+                  stroke="rgb(132,32,51)"
                   stroke-width="1.5"></circle>
         </g>
         <ellipse cx="112" cy="340" rx="54" ry="14" transform="rotate(25 112,340)" fill="rgb(210,30,64)"/>
@@ -76,11 +77,12 @@
         <ellipse rx="50" ry="42" cx="205" cy="213" fill="#fefefe" transform="rotate(54, 205,213)"/>
         <circle id="left-eye" :cx="cx1" :cy="cy1" r="5" fill="rgb(39,29,35)"/>
         <circle id="right-eye" :cx="cx2" :cy="cy2" r="5" fill="rgb(39,29,35)"/>
-        <path stroke="rgb(41,36,32)" :d="hasErr?'M135,318 a50,50 0 0,1 50,4':'M135,311 a50,50 0 0,0 50,4'" fill="none" stroke-width="2"/>
+        <path stroke="rgb(41,36,32)" :d="hasErr?'M135,318 a50,50 0 0,1 50,4':'M135,311 a50,50 0 0,0 50,4'" fill="none"
+              stroke-width="2"/>
       </g>
     </svg>
     <div class="bubble" v-show="isAni">
-      <div :style="{color: hasErr?'#dd4a68':'#333'}">{{message}}</div>
+      <div :style="{color: hasErr?'#dd4a68':'#333'}">{{ message }}</div>
     </div>
   </div>
 </template>
@@ -99,39 +101,39 @@ export default {
       isAni: false,
       hasErr: false,
       messages: [
-          '你好！我是坦坦(Stan)，是本站的向导~',
-          '我也是作者一行行写出来的哦，花了一整个通宵呢',
-          '登录可以体验完整功能哦',
-          '登出按钮在右上角！鼠标经过头像即可显示',
-          '我想，作者创造我与其说是为了实用，不如说是为了炫技...',
-          '为了方便使用，登录注册流程的复杂度已经最小化！（其实是作者懒得弄）',
-          '点击右上角进入个人页，可以编辑头像等个人资料',
-          '在帖子中，你的发言字体颜色是头像的主题色！所以建议头像色调不要太淡',
-          '我喜欢Kyle，我在第16季向他表白了！',
-          '我觉得Cartman对Butters绝对有意思...',
-          'Kenny好久没当主角了，好可怜',
-          '我不明白为什么那么多人磕我和Craig，因为我们的帽子都是蓝色的吗？',
+        '你好！我是坦坦(Stan)，是本站的向导~',
+        '我也是作者一行行写出来的哦，花了一整个通宵呢',
+        '登录可以体验完整功能哦',
+        '登出按钮在右上角！鼠标经过头像即可显示',
+        '我想，作者创造我与其说是为了实用，不如说是为了炫技...',
+        '为了方便使用，登录注册流程的复杂度已经最小化！（其实是作者懒得弄）',
+        '点击右上角进入个人页，可以编辑头像等个人资料',
+        '在帖子中，你的发言字体颜色是头像的主题色！所以建议头像色调不要太淡',
+        '我喜欢Kyle，我在第16季向他表白了！',
+        '我觉得Cartman对Butters绝对有意思...',
+        'Kenny好久没当主角了，好可怜',
+        '我不明白为什么那么多人磕我和Craig，因为我们的帽子都是蓝色的吗？',
       ],
       message: '',
       timer: null,
     }
   },
   methods: {
-    move(){
-      if(this.isAni)return
-      this.message=this.messages[Math.floor(Math.random()*this.messages.length)]
+    move() {
+      if (this.isAni) return
+      this.message = this.messages[Math.floor(Math.random() * this.messages.length)]
       this.isAni = true
       clearInterval(this.timer)
-      setTimeout(()=>{
-        this.isAni=false
-      },4000)
-      this.timer = setInterval(()=>{
-        this.message=this.messages[Math.floor(Math.random()*this.messages.length)]
-        this.isAni=true
-        setTimeout(()=>{
-          this.isAni=false
-        },4000)
-      },10000)
+      setTimeout(() => {
+        this.isAni = false
+      }, 4000)
+      this.timer = setInterval(() => {
+        this.message = this.messages[Math.floor(Math.random() * this.messages.length)]
+        this.isAni = true
+        setTimeout(() => {
+          this.isAni = false
+        }, 4000)
+      }, 10000)
     }
   },
   mounted() {
@@ -152,39 +154,39 @@ export default {
         ]
       }
     })
-    setTimeout(()=>{
-      this.message=this.messages[0]
-      this.isAni=true
-      setTimeout(()=>{
-        this.isAni=false
-      },4000)
-      this.timer = setInterval(()=>{
-        this.message=this.messages[Math.floor(Math.random()*this.messages.length)]
-        this.isAni=true
-        setTimeout(()=>{
-          this.isAni=false
-        },4000)
-      },10000)
-    },1000)
+    setTimeout(() => {
+      this.message = this.messages[0]
+      this.isAni = true
+      setTimeout(() => {
+        this.isAni = false
+      }, 4000)
+      this.timer = setInterval(() => {
+        this.message = this.messages[Math.floor(Math.random() * this.messages.length)]
+        this.isAni = true
+        setTimeout(() => {
+          this.isAni = false
+        }, 4000)
+      }, 10000)
+    }, 1000)
   },
-  watch:{
-    '$store.state.errMessage'(newMsg, oldMsg){
-      if(newMsg){
+  watch: {
+    '$store.state.errMessage'(newMsg, oldMsg) {
+      if (newMsg) {
         this.hasErr = true
         this.message = newMsg
         this.isAni = true
         clearInterval(this.timer)
-        setTimeout(()=>{
-          this.isAni=false
-          this.hasErr=false
-        },4000)
-        this.timer = setInterval(()=>{
-          this.message=this.messages[Math.floor(Math.random()*this.messages.length)]
-          this.isAni=true
-          setTimeout(()=>{
-            this.isAni=false
-          },4000)
-        },10000)
+        setTimeout(() => {
+          this.isAni = false
+          this.hasErr = false
+        }, 4000)
+        this.timer = setInterval(() => {
+          this.message = this.messages[Math.floor(Math.random() * this.messages.length)]
+          this.isAni = true
+          setTimeout(() => {
+            this.isAni = false
+          }, 4000)
+        }, 10000)
       }
     }
   }
@@ -192,14 +194,14 @@ export default {
 </script>
 
 <style scoped>
-.bubble{
+.bubble {
   font-size: 30px;
   width: 340px;
-  background-color: rgba(244,244,244,0.8);
+  background-color: rgba(244, 244, 244, 0.8);
   position: absolute;
   top: -150px;
   right: 60px;
-  box-shadow: 2px 2px 4px rgba(100,100,100,0.3);
+  box-shadow: 2px 2px 4px rgba(100, 100, 100, 0.3);
   box-sizing: border-box;
   padding: 16px;
   line-height: 1.3;
